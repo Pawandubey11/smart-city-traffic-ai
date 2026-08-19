@@ -6,25 +6,29 @@
   <title>Smart City Traffic & Accident AI Control Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg-dark: #060913;
-      --panel-bg: rgba(13, 18, 36, 0.75);
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --accent-blue: #38bdf8;
-      --accent-indigo: #818cf8;
+      --bg-dark: #090d16;
+      --panel-bg: #111827;
+      --panel-border: #1f2937;
+      --panel-hover: #374151;
+      
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
-      --accent-red: #f43f5e;
-      --accent-purple: #c084fc;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --font-main: 'Inter', system-ui, sans-serif;
-      --font-heading: 'Outfit', system-ui, sans-serif;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,109 +39,96 @@
       font-family: var(--font-main);
       min-height: 100vh;
       padding: 1.25rem;
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%);
+      -webkit-font-smoothing: antialiased;
     }
 
     .container { max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem; }
 
-    .glass-panel {
+    .panel {
       background: var(--panel-bg);
-      backdrop-filter: blur(20px);
       border: 1px solid var(--panel-border);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 1.25rem;
-      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.6);
-      transition: border-color 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.2s ease;
     }
-    .glass-panel:hover { border-color: rgba(255, 255, 255, 0.15); }
+    .panel:hover { border-color: var(--panel-hover); }
 
-    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.75rem; }
-    .brand-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
+    .brand-title { font-family: var(--font-heading); font-size: 1.45rem; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
 
-    .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-    .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background-color: currentColor; animation: pulse 1.8s infinite; }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; animation: pulse 1.8s infinite; }
     @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 0.4; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
-    /* Industrial Action Toolbar */
     .toolbar { display: flex; gap: 0.75rem; align-items: center; }
-    .btn-action { background: rgba(255, 255, 255, 0.06); color: #fff; border: 1px solid var(--panel-border); padding: 0.55rem 1.1rem; border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; }
-    .btn-action:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--accent-blue); transform: translateY(-1px); }
-    .btn-action-emergency { background: rgba(192, 132, 252, 0.2); color: var(--accent-purple); border-color: var(--accent-purple); }
-    .btn-action-emergency:hover { background: var(--accent-purple); color: #000; }
+    .btn-action { background: #1f2937; color: #f3f4f6; border: 1px solid #374151; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.15s ease; }
+    .btn-action:hover { background: #374151; color: #fff; }
+    .btn-action-emergency { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border-color: rgba(168, 85, 247, 0.3); }
+    .btn-action-emergency:hover { background: var(--accent-purple); color: #fff; }
 
     .alert-banner {
-      background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(159, 18, 57, 0.45) 100%);
-      border: 1px solid var(--accent-red);
-      border-radius: 14px;
-      padding: 1.1rem 1.5rem;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      animation: alertGlow 2s infinite alternate;
     }
-    @keyframes alertGlow { 0% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.2); } 100% { box-shadow: 0 0 35px rgba(244, 63, 94, 0.7); } }
 
-    .btn-alert { background: var(--accent-red); color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .btn-alert { background: var(--accent-red); color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+    .btn-alert:hover { background: #dc2626; }
 
-    /* Key Metrics Grid */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
-    .metric-card { display: flex; flex-direction: column; gap: 0.4rem; position: relative; overflow: hidden; }
-    .metric-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
-    .metric-card-1::before { background: var(--accent-blue); }
-    .metric-card-2::before { background: var(--accent-indigo); }
-    .metric-card-3::before { background: var(--accent-yellow); }
-    .metric-card-4::before { background: var(--accent-purple); }
-    .metric-card-5::before { background: var(--accent-red); }
+    .metric-card { display: flex; flex-direction: column; gap: 0.35rem; }
 
-    .metric-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); }
-    .metric-value { font-family: var(--font-heading); font-size: 2.6rem; font-weight: 800; }
-    .metric-sub { font-size: 0.78rem; color: var(--text-secondary); }
+    .metric-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); }
+    .metric-value { font-family: var(--font-heading); font-size: 2.4rem; font-weight: 700; color: #fff; }
+    .metric-sub { font-size: 0.78rem; color: var(--text-muted); }
 
     .main-grid { display: grid; grid-template-columns: 2.2fr 1fr; gap: 1.25rem; }
     @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
 
     .camera-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
-    .badge { padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-    .badge-low { background: rgba(16, 185, 129, 0.18); color: var(--accent-green); }
-    .badge-medium { background: rgba(245, 158, 11, 0.18); color: var(--accent-yellow); }
-    .badge-high { background: rgba(244, 63, 94, 0.18); color: var(--accent-red); }
-    .badge-severe { background: rgba(225, 29, 72, 0.25); color: #f43f5e; border: 1px solid #f43f5e; }
+    .badge { padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+    .badge-low { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .badge-medium { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); }
+    .badge-high { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+    .badge-severe { background: rgba(239, 68, 68, 0.25); color: #ef4444; border: 1px solid #ef4444; }
 
-    .video-viewport { width: 100%; height: 210px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
+    .video-viewport { width: 100%; height: 210px; background: #030712; border-radius: 8px; position: relative; overflow: hidden; border: 1px solid #1f2937; }
     .video-viewport canvas { width: 100%; height: 100%; object-fit: cover; }
-    .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #38bdf8; z-index: 10; }
-    .camera-hud { position: absolute; bottom: 8px; right: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; color: #10b981; z-index: 10; }
+    .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(17, 24, 39, 0.85); padding: 3px 7px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #e5e7eb; z-index: 10; border: 1px solid #374151; }
+    .camera-hud { position: absolute; bottom: 8px; right: 8px; background: rgba(17, 24, 39, 0.85); padding: 3px 7px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; color: var(--accent-green); z-index: 10; border: 1px solid #374151; }
 
-    .camera-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.8rem; background: rgba(255, 255, 255, 0.02); padding: 0.75rem; border-radius: 8px; }
+    .camera-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.8rem; background: rgba(31, 41, 55, 0.4); padding: 0.75rem; border-radius: 6px; }
     .stat-label { color: var(--text-secondary); }
-    .stat-val { font-weight: 700; color: #fff; }
+    .stat-val { font-weight: 600; color: #fff; }
 
-    #map { width: 100%; height: 260px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1.25rem; }
+    #map { width: 100%; height: 260px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 1.25rem; }
     .chart-container { position: relative; height: 200px; width: 100%; }
 
-    /* Industrial ALPR Violations Table */
     .alpr-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.82rem; }
-    .alpr-table th { background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--panel-border); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; }
-    .alpr-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-weight: 500; }
-    .alpr-plate { font-family: monospace; font-weight: 700; background: #fbbf24; color: #000; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
+    .alpr-table th { background: #1f2937; color: var(--text-secondary); text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid #374151; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+    .alpr-table td { padding: 0.65rem 0.9rem; border-bottom: 1px solid #1f2937; font-weight: 500; }
+    .alpr-plate { font-family: monospace; font-weight: 700; background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background: #0d1224; border: 1px solid var(--accent-red); border-radius: 16px; max-width: 650px; width: 90%; padding: 1.5rem; }
-    .modal-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
+    .modal-content { background: #111827; border: 1px solid #374151; border-radius: 12px; max-width: 650px; width: 90%; padding: 1.5rem; }
+    .modal-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.4rem; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <header class="navbar glass-panel">
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <span style="font-size: 2.2rem;">🚦</span>
+    <header class="navbar panel">
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <span style="font-size: 1.8rem;">🚦</span>
         <div>
           <h1 class="brand-title">SMART CITY TRAFFIC & ACCIDENT AI CONTROL CENTER</h1>
-          <span style="font-size: 0.78rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR, Spatial Heatmaps & Emergency Preemption</span>
+          <span style="font-size: 0.78rem; color: var(--text-secondary);">AWS Greengrass Edge Node v1.0 • Live ALPR & Emergency Corridor Preemption</span>
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 1rem;">
@@ -151,44 +142,44 @@
       </div>
     </header>
 
-    <!-- Dynamic Emergency Preemption Notice -->
-    <div id="preemptionBanner" style="background: rgba(192, 132, 252, 0.15); border: 1px solid var(--accent-purple); padding: 0.85rem 1.25rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-      <span style="font-weight: 700; color: var(--accent-purple);">🚑 EMERGENCY VEHICLE PREEMPTION ACTIVE — Priority Green Corridor Open (CAM-SOUTH-002)</span>
-      <span style="font-size: 0.8rem; background: var(--accent-purple); color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 800;" id="timerBadge">GREEN SIGNAL: 90 SEC</span>
+    <!-- Emergency Preemption Notice -->
+    <div id="preemptionBanner" style="background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); padding: 0.8rem 1.25rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-weight: 600; color: var(--accent-purple);">🚑 EMERGENCY VEHICLE PREEMPTION ACTIVE — Priority Green Corridor Open (CAM-SOUTH-002)</span>
+      <span style="font-size: 0.78rem; background: var(--accent-purple); color: #fff; padding: 4px 10px; border-radius: 4px; font-weight: 700;" id="timerBadge">GREEN SIGNAL: 90 SEC</span>
     </div>
 
     <!-- Critical Alert Banner -->
     <div class="alert-banner" id="accidentAlertBanner">
       <div>
-        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
-        <p style="color: #fca5a5; font-size: 0.875rem;">AI Spatial-Temporal Confidence: 94.5% | Time-To-Collision (TTC): 0.8s | Severity: CRITICAL</p>
+        <h3 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
+        <p style="color: #fca5a5; font-size: 0.85rem; margin-top: 2px;">AI Confidence: 94.5% | Time-To-Collision (TTC): 0.8s | Severity: CRITICAL</p>
       </div>
-      <button class="btn-alert" onclick="openEvidenceModal()">Inspect S3 Evidence Snapshot</button>
+      <button class="btn-alert" onclick="openEvidenceModal()">Inspect Evidence Snapshot</button>
     </div>
 
     <!-- Executive Metrics Grid -->
     <div class="metrics-grid">
-      <div class="glass-panel metric-card metric-card-1">
+      <div class="panel metric-card">
         <span class="metric-label">Monitored Junctions</span>
-        <span class="metric-value" style="color: var(--accent-blue);">3</span>
-        <span class="metric-sub">Active RTSP Feeds</span>
+        <span class="metric-value" style="color: #60a5fa;">3</span>
+        <span class="metric-sub">Active RTSP Camera Feeds</span>
       </div>
-      <div class="glass-panel metric-card metric-card-2">
+      <div class="panel metric-card">
         <span class="metric-label">Tracked Vehicles</span>
-        <span class="metric-value" style="color: var(--accent-indigo);">85</span>
+        <span class="metric-value" style="color: #818cf8;">85</span>
         <span class="metric-sub">ByteTrack Persistent Tracking</span>
       </div>
-      <div class="glass-panel metric-card metric-card-3">
+      <div class="panel metric-card">
         <span class="metric-label">City Congestion Index</span>
         <span class="metric-value" style="color: var(--accent-yellow);">78.4 / 100</span>
-        <span class="metric-sub">Occupancy: 52.4%</span>
+        <span class="metric-sub">Road Occupancy: 52.4%</span>
       </div>
-      <div class="glass-panel metric-card metric-card-4">
+      <div class="panel metric-card">
         <span class="metric-label">Overspeeding Violations</span>
         <span class="metric-value" style="color: var(--accent-purple);">2</span>
         <span class="metric-sub">ALPR OCR Extracted</span>
       </div>
-      <div class="glass-panel metric-card metric-card-5">
+      <div class="panel metric-card">
         <span class="metric-label">Active Accidents</span>
         <span class="metric-value" style="color: var(--accent-red);">1</span>
         <span class="metric-sub">Amazon SNS Alert Dispatched</span>
@@ -198,23 +189,23 @@
     <div class="main-grid">
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <!-- Live Camera Feeds Section -->
-        <div class="glass-panel">
+        <div class="panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <div>
-              <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & ALPR Speed Tracker</h2>
-              <span style="font-size: 0.78rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + ALPR OCR + PyTorch CNN-LSTM</span>
+              <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🎥 Live Edge Camera Streams & ALPR Speed Tracker</h2>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">YOLOv8 • ByteTrack • ALPR OCR • PyTorch CNN-LSTM</span>
             </div>
             <div style="display: flex; gap: 0.4rem;">
-              <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;" id="btnGrid" onclick="switchView('grid')">2x2 Grid View</button>
-              <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;" id="btnHeatmap" onclick="switchView('heatmap')">Spatial Heatmap View</button>
+              <button class="btn-action" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" id="btnGrid" onclick="switchView('grid')">2x2 Grid View</button>
+              <button class="btn-action" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" id="btnHeatmap" onclick="switchView('heatmap')">Spatial Heatmap View</button>
             </div>
           </div>
           
           <div class="camera-grid" id="cameraGrid">
             <!-- Camera 1 -->
-            <div class="glass-panel">
+            <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 700; font-size: 0.95rem;">North Junction & 5th Ave</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">North Junction & 5th Ave</span>
                 <span class="badge badge-high">HIGH (72.0)</span>
               </div>
               <div class="video-viewport">
@@ -222,26 +213,26 @@
                 <div class="camera-hud">LATENCY: 14.2ms | CPU: 19%</div>
                 <canvas id="canvas1"></canvas>
               </div>
-              <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="camera-stats" style="margin-top: 0.65rem;">
                 <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">28</span></div>
                 <div class="stat-item"><span class="stat-label">Max Speed:</span><span class="stat-val">48.2 km/h</span></div>
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
-                <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
+                <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: #60a5fa;">45 sec</span></div>
               </div>
             </div>
 
             <!-- Camera 2 -->
-            <div class="glass-panel">
+            <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 700; font-size: 0.95rem;">South Expressway Exit 12</span>
-                <span class="badge badge-low" style="background: rgba(192,132,252,0.2); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">South Expressway Exit 12</span>
+                <span class="badge badge-low" style="background: rgba(168,85,247,0.15); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
               </div>
               <div class="video-viewport">
                 <div class="camera-overlay" style="color: var(--accent-purple);">CAM-SOUTH-002 • PREEMPTION</div>
                 <div class="camera-hud">LATENCY: 12.8ms | CPU: 22%</div>
                 <canvas id="canvas2"></canvas>
               </div>
-              <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="camera-stats" style="margin-top: 0.65rem;">
                 <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">12</span></div>
                 <div class="stat-item"><span class="stat-label">Violations:</span><span class="stat-val" style="color: var(--accent-purple);">1 (TX-474-CG)</span></div>
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
@@ -250,9 +241,9 @@
             </div>
 
             <!-- Camera 3 -->
-            <div class="glass-panel">
+            <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 700; font-size: 0.95rem;">East Bridge Toll Plaza</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">East Bridge Toll Plaza</span>
                 <span class="badge badge-severe">SEVERE (91.2)</span>
               </div>
               <div class="video-viewport">
@@ -260,7 +251,7 @@
                 <div class="camera-hud" style="color: #ef4444;">ALERT: CRITICAL (94.5%)</div>
                 <canvas id="canvas3"></canvas>
               </div>
-              <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="camera-stats" style="margin-top: 0.65rem;">
                 <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">45</span></div>
                 <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 km/h</span></div>
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
@@ -271,10 +262,10 @@
         </div>
 
         <!-- Real-Time ALPR Overspeeding Violations Table -->
-        <div class="glass-panel">
+        <div class="panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚘 Real-Time ALPR Speed Violations & Enforcement Log</h2>
-            <span style="font-size: 0.75rem; color: var(--accent-purple); font-weight: 700;">ALPR Homography Speed Engine</span>
+            <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚘 Real-Time ALPR Speed Violations & Enforcement Log</h2>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">Automated Homography Speed Calibration</span>
           </div>
           <table class="alpr-table">
             <thead>
@@ -284,7 +275,7 @@
                 <th>Vehicle Class</th>
                 <th>License Plate</th>
                 <th>Measured Speed</th>
-                <th>Limit</th>
+                <th>Speed Limit</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -295,7 +286,7 @@
                 <td>CAM-SOUTH-002</td>
                 <td>Car (#2)</td>
                 <td><span class="alpr-plate">TX-474-CG</span></td>
-                <td style="color: var(--accent-red); font-weight: 800;">76.2 km/h</td>
+                <td style="color: var(--accent-red); font-weight: 700;">76.2 km/h</td>
                 <td>60 km/h</td>
                 <td><span class="badge badge-high">OVERSPEEDING</span></td>
                 <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
@@ -305,7 +296,7 @@
                 <td>CAM-NORTH-001</td>
                 <td>Motorcycle (#5)</td>
                 <td><span class="alpr-plate">CA-337-BD</span></td>
-                <td style="color: var(--accent-green); font-weight: 800;">48.5 km/h</td>
+                <td style="color: var(--accent-green); font-weight: 700;">48.5 km/h</td>
                 <td>60 km/h</td>
                 <td><span class="badge badge-low">NORMAL</span></td>
                 <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
@@ -316,13 +307,13 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-        <div class="glass-panel">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">🗺️ Smart City GIS Map View</h2>
+        <div class="panel">
+          <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; margin-bottom: 0.85rem; color: #fff;">🗺️ Smart City Map View</h2>
           <div id="map"></div>
         </div>
 
-        <div class="glass-panel">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">📊 Temporal Congestion Analytics</h2>
+        <div class="panel">
+          <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; margin-bottom: 0.85rem; color: #fff;">📊 Temporal Traffic Density Analytics</h2>
           <div class="chart-container">
             <canvas id="trafficChart"></canvas>
           </div>
@@ -335,16 +326,16 @@
   <div class="modal-overlay" id="evidenceModal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-        <h3 style="color: #fff;">📸 Amazon S3 Evidence Snapshot & ALPR Evidence</h3>
+        <h3 style="color: #fff;">📸 Amazon S3 Evidence Snapshot</h3>
         <button class="modal-close" onclick="closeEvidenceModal()">&times;</button>
       </div>
-      <div style="background: #000; border-radius: 8px; overflow: hidden; height: 300px; position: relative; margin-bottom: 1rem;">
+      <div style="background: #000; border-radius: 8px; overflow: hidden; height: 280px; position: relative; margin-bottom: 1rem; border: 1px solid #374151;">
         <canvas id="evidenceCanvas" style="width: 100%; height: 100%;"></canvas>
-        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(244,63,94,0.85); color: #fff; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.85rem;">
+        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(239,68,68,0.9); color: #fff; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">
           ACCIDENT DETECTED (CONFIDENCE: 94.5% | TTC: 0.8s)
         </div>
       </div>
-      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
         <strong>S3 Object Key:</strong> <code>accidents/CAM-EAST-003/2026-08-19/acc_9842.jpg</code><br>
         <strong>Presigned HTTPS URL:</strong> Active (Expires in 58 mins)
       </p>
@@ -360,11 +351,11 @@
 
     const cams = [
       { name: "CAM-NORTH-001 (North Junction)", lat: 40.712776, lng: -74.005974, color: "#f59e0b" },
-      { name: "CAM-SOUTH-002 (Ambulance Priority)", lat: 40.705000, lng: -74.011000, color: "#c084fc" },
-      { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#f43f5e" }
+      { name: "CAM-SOUTH-002 (Ambulance Priority)", lat: 40.705000, lng: -74.011000, color: "#a855f7" },
+      { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#ef4444" }
     ];
     cams.forEach(c => {
-      L.circleMarker([c.lat, c.lng], { color: c.color, fillColor: c.color, fillOpacity: 0.8, radius: 9 }).addTo(map).bindPopup(`<b>${c.name}</b>`);
+      L.circleMarker([c.lat, c.lng], { color: c.color, fillColor: c.color, fillOpacity: 0.8, radius: 8 }).addTo(map).bindPopup(`<b>${c.name}</b>`);
     });
 
     const ctx = document.getElementById('trafficChart').getContext('2d');
@@ -375,10 +366,10 @@
         datasets: [{
           label: 'Tracked Vehicles',
           data: [42, 65, 88, 70, 85, 60, 85],
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(56, 189, 248, 0.1)',
+          borderColor: '#60a5fa',
+          backgroundColor: 'rgba(96, 165, 250, 0.08)',
           fill: true,
-          tension: 0.4
+          tension: 0.3
         }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
@@ -388,8 +379,8 @@
 
     function switchView(mode) {
       currentViewMode = mode;
-      document.getElementById('btnGrid').style.borderColor = mode === 'grid' ? '#38bdf8' : 'rgba(255,255,255,0.08)';
-      document.getElementById('btnHeatmap').style.borderColor = mode === 'heatmap' ? '#38bdf8' : 'rgba(255,255,255,0.08)';
+      document.getElementById('btnGrid').style.background = mode === 'grid' ? '#374151' : '#1f2937';
+      document.getElementById('btnHeatmap').style.background = mode === 'heatmap' ? '#374151' : '#1f2937';
     }
 
     function triggerEmergencyCorridor() {
@@ -414,7 +405,7 @@
       let x1 = 20, x2 = 140;
 
       function draw() {
-        ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = '#030712'; ctx.fillRect(0, 0, cvs.width, cvs.height);
 
         if (currentViewMode === 'heatmap') {
           // Render Spatial 8x8 Grid Heatmap Simulation
@@ -422,23 +413,23 @@
           const cellH = cvs.height / 8;
           for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
-              let alpha = ((r * 8 + c) % 5 === 0) ? 0.65 : 0.15;
-              ctx.fillStyle = `rgba(244, 63, 94, ${alpha})`;
+              let alpha = ((r * 8 + c) % 5 === 0) ? 0.6 : 0.12;
+              ctx.fillStyle = `rgba(239, 68, 68, ${alpha})`;
               ctx.fillRect(c * cellW, r * cellH, cellW - 1, cellH - 1);
             }
           }
-          ctx.fillStyle = '#fff';
+          ctx.fillStyle = '#9ca3af';
           ctx.font = '10px Inter';
           ctx.fillText("SPATIAL DENSITY HEATMAP (8x8)", 10, 20);
         } else {
-          ctx.strokeStyle = '#334155'; ctx.setLineDash([8, 8]);
+          ctx.strokeStyle = '#1f2937'; ctx.setLineDash([8, 8]);
           ctx.beginPath(); ctx.moveTo(0, 105); ctx.lineTo(320, 105); ctx.stroke();
 
           x1 = (x1 + 2) % 320;
           x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
 
           // Draw Vehicle Bounding Boxes & Direction Vectors
-          ctx.strokeStyle = carColor; ctx.lineWidth = 2;
+          ctx.strokeStyle = carColor; ctx.lineWidth = 1.5;
           ctx.strokeRect(x1, 50, 42, 26);
           ctx.fillStyle = carColor; ctx.font = '10px Inter';
           ctx.fillText("CAR #1 [TX-474-CG]", x1, 44);
@@ -446,22 +437,22 @@
           // Motion Velocity Vector Line
           ctx.beginPath(); ctx.moveTo(x1 + 42, 63); ctx.lineTo(x1 + 55, 63); ctx.stroke();
 
-          ctx.strokeStyle = hasAccident ? '#f43f5e' : '#c084fc';
+          ctx.strokeStyle = hasAccident ? '#ef4444' : '#a855f7';
           ctx.strokeRect(x2, 125, 48, 28);
-          ctx.fillStyle = hasAccident ? '#f43f5e' : '#c084fc';
+          ctx.fillStyle = hasAccident ? '#ef4444' : '#a855f7';
           ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 118);
 
-          if (hasAccident) { ctx.strokeStyle = '#f43f5e'; ctx.strokeRect(x2 - 5, 120, 58, 38); }
+          if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 120, 58, 38); }
         }
         requestAnimationFrame(draw);
       }
       draw();
     }
 
-    animateCanvas('canvas1', '#38bdf8');
-    animateCanvas('canvas2', '#c084fc');
-    animateCanvas('canvas3', '#f43f5e', true);
-    animateCanvas('evidenceCanvas', '#f43f5e', true);
+    animateCanvas('canvas1', '#60a5fa');
+    animateCanvas('canvas2', '#a855f7');
+    animateCanvas('canvas3', '#ef4444', true);
+    animateCanvas('evidenceCanvas', '#ef4444', true);
 
     function openEvidenceModal() { document.getElementById('evidenceModal').classList.add('active'); }
     function closeEvidenceModal() { document.getElementById('evidenceModal').classList.remove('active'); }

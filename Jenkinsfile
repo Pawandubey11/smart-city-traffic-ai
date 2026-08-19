@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Setting up Lightweight CPU Python environment..."
-                    rm -rf ~/.cache/pip /tmp/* || true
+                    rm -rf ~/.cache/pip /tmp/hsperfdata_* || true
                     
                     python3 -m venv venv || python3 -m venv --without-pip venv || true
                     
@@ -51,6 +51,9 @@ pipeline {
                     if [ -f venv/bin/activate ]; then
                         . venv/bin/activate
                     fi
+                    echo "Generating synthetic sample traffic video..."
+                    python3 data/create_sample_traffic_video.py || true
+                    
                     python3 tests/test_phase1_environment.py
                     python3 tests/test_phase2_video_pipeline.py
                     python3 tests/test_phase3_vehicle_detection.py

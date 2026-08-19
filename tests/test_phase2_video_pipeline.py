@@ -13,6 +13,9 @@ def test_video_pipeline():
     print("==================================================")
     
     video_path = "data/sample_traffic.mp4"
+    if not os.path.exists(video_path):
+        print(f"Sample video not found at {video_path}. Auto-generating synthetic traffic video...")
+        os.system(f"{sys.executable} data/create_sample_traffic_video.py")
     assert os.path.exists(video_path), f"Sample video not found at {video_path}"
     
     roi_poly = [[100, 100], [1180, 100], [1180, 650], [100, 650]]

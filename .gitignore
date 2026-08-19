@@ -6,7 +6,10 @@ __pycache__/
 *.so
 
 # Data and Models
-data/
+data/*.mp4
+data/*.avi
+data/*.jpg
+data/s3_mock/
 models/weights/
 *.pt
 *.onnx

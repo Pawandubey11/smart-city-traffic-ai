@@ -23,7 +23,13 @@ def generate_synthetic_dataset(num_samples: int = 40, sequence_length: int = 16,
     y = np.random.randint(0, 2, size=(num_samples, 1)).astype(np.float32)
     return torch.tensor(X), torch.tensor(y)
 
-def train_and_evaluate(epochs: int = 3, batch_size: int = 2, lr: float = 0.001):
+def train_and_evaluate(epochs: Any = 3, batch_size: int = 2, lr: float = 0.001):
+    if hasattr(epochs, "epochs"):
+        args = epochs
+        epochs = getattr(args, "epochs", 3)
+        batch_size = getattr(args, "batch_size", 2)
+        lr = getattr(args, "lr", 0.001)
+        
     logger.info("==================================================")
     logger.info("STARTING AWS SAGEMAKER CNN-LSTM MODEL TRAINING & EVALUATION")
     logger.info(f"Hyperparameters - Epochs: {epochs}, Batch Size: {batch_size}, LR: {lr}")

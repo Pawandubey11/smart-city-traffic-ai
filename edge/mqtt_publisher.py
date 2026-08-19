@@ -68,5 +68,10 @@ class IoTCoreMQTTPublisher:
         """Helper alias method for accident alert dispatches."""
         return self.publish(payload)
 
+    def disconnect(self) -> None:
+        """Gracefully disconnects MQTT client."""
+        self.is_connected = False
+        logger.info("MQTT Client disconnected gracefully.")
+
 # Backward compatibility class alias
 SmartCityMQTTClient = IoTCoreMQTTPublisher

@@ -71,6 +71,8 @@
     @keyframes alertGlow { 0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); } 100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); } }
 
     .btn-alert { background: #ef4444; color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .btn-tab { background: rgba(255, 255, 255, 0.05); color: var(--text-secondary); border: 1px solid var(--panel-border); padding: 0.4rem 0.9rem; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease; }
+    .btn-tab.active { background: var(--accent-blue); color: #000; border-color: var(--accent-blue); }
 
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
     .metric-card { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -87,9 +89,10 @@
     .badge-high { background: rgba(239, 68, 68, 0.18); color: var(--accent-red); }
     .badge-severe { background: rgba(225, 29, 72, 0.25); color: #f43f5e; border: 1px solid #f43f5e; }
 
-    .video-viewport { width: 100%; height: 200px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
+    .video-viewport { width: 100%; height: 220px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
     .video-viewport canvas { width: 100%; height: 100%; object-fit: cover; }
-    .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #38bdf8; }
+    .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #38bdf8; z-index: 10; }
+    .camera-hud { position: absolute; bottom: 8px; right: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; color: #10b981; z-index: 10; }
 
     .camera-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.8rem; background: rgba(255, 255, 255, 0.02); padding: 0.75rem; border-radius: 8px; }
     .stat-label { color: var(--text-secondary); }
@@ -97,6 +100,12 @@
 
     #map { width: 100%; height: 260px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1.25rem; }
     .chart-container { position: relative; height: 200px; width: 100%; }
+
+    /* Industrial ALPR Violations Table */
+    .alpr-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.82rem; }
+    .alpr-table th { background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--panel-border); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; }
+    .alpr-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-weight: 500; }
+    .alpr-plate { font-family: monospace; font-weight: 700; background: #fbbf24; color: #000; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -112,7 +121,7 @@
         <span style="font-size: 2rem;">🚦</span>
         <div>
           <h1 class="brand-title">SMART CITY TRAFFIC & ACCIDENT AI CONTROL CENTER</h1>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR & Emergency Corridor Preemption</span>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR, Spatial Heatmaps & Emergency Preemption</span>
         </div>
       </div>
       <div class="status-badge">
@@ -165,77 +174,133 @@
     </div>
 
     <div class="main-grid">
-      <div class="glass-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & ALPR Speed Tracker</h2>
-          <span style="font-size: 0.8rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + ALPR + PyTorch CNN-LSTM</span>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Live Camera Feeds Section -->
+        <div class="glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & ALPR Speed Tracker</h2>
+              <span style="font-size: 0.78rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + ALPR OCR + PyTorch CNN-LSTM</span>
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <button class="btn-tab active" onclick="switchView('grid')">2x2 Grid View</button>
+              <button class="btn-tab" onclick="switchView('heatmap')">Spatial Heatmap View</button>
+            </div>
+          </div>
+          
+          <div class="camera-grid" id="cameraGrid">
+            <!-- Camera 1 -->
+            <div class="glass-panel">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; font-size: 0.95rem;">North Junction & 5th Ave</span>
+                <span class="badge badge-high">HIGH (72.0)</span>
+              </div>
+              <div class="video-viewport">
+                <div class="camera-overlay">CAM-NORTH-001 • 30 FPS</div>
+                <div class="camera-hud">LATENCY: 14.2ms | CPU: 19%</div>
+                <canvas id="canvas1"></canvas>
+              </div>
+              <div class="camera-stats" style="margin-top: 0.75rem;">
+                <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">28</span></div>
+                <div class="stat-item"><span class="stat-label">Max Speed:</span><span class="stat-val">48.2 km/h</span></div>
+                <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
+                <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
+              </div>
+            </div>
+
+            <!-- Camera 2 -->
+            <div class="glass-panel">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; font-size: 0.95rem;">South Expressway Exit 12</span>
+                <span class="badge badge-low" style="background: rgba(192,132,252,0.2); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
+              </div>
+              <div class="video-viewport">
+                <div class="camera-overlay" style="color: var(--accent-purple);">CAM-SOUTH-002 • PREEMPTION</div>
+                <div class="camera-hud">LATENCY: 12.8ms | CPU: 22%</div>
+                <canvas id="canvas2"></canvas>
+              </div>
+              <div class="camera-stats" style="margin-top: 0.75rem;">
+                <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">12</span></div>
+                <div class="stat-item"><span class="stat-label">Violations:</span><span class="stat-val" style="color: var(--accent-purple);">1 (TX-474-CG)</span></div>
+                <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
+                <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-purple);">90s OVERRIDE</span></div>
+              </div>
+            </div>
+
+            <!-- Camera 3 -->
+            <div class="glass-panel">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; font-size: 0.95rem;">East Bridge Toll Plaza</span>
+                <span class="badge badge-severe">SEVERE (91.2)</span>
+              </div>
+              <div class="video-viewport">
+                <div class="camera-overlay" style="color: #ef4444;">CAM-EAST-003 • ACCIDENT ALERT</div>
+                <div class="camera-hud" style="color: #ef4444;">ALERT: CRITICAL (94.5%)</div>
+                <canvas id="canvas3"></canvas>
+              </div>
+              <div class="camera-stats" style="margin-top: 0.75rem;">
+                <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">45</span></div>
+                <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 km/h</span></div>
+                <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
+                <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <div class="camera-grid">
-          <!-- Camera 1 -->
-          <div class="glass-panel">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span style="font-weight: 700; font-size: 0.95rem;">North Junction & 5th Ave</span>
-              <span class="badge badge-high">HIGH (72.0)</span>
-            </div>
-            <div class="video-viewport">
-              <div class="camera-overlay">CAM-NORTH-001 • 30 FPS</div>
-              <canvas id="canvas1"></canvas>
-            </div>
-            <div class="camera-stats" style="margin-top: 0.75rem;">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">28</span></div>
-              <div class="stat-item"><span class="stat-label">Max Speed:</span><span class="stat-val">48.2 km/h</span></div>
-              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
-            </div>
-          </div>
 
-          <!-- Camera 2 -->
-          <div class="glass-panel">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span style="font-weight: 700; font-size: 0.95rem;">South Expressway Exit 12</span>
-              <span class="badge badge-low" style="background: rgba(192,132,252,0.2); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
-            </div>
-            <div class="video-viewport">
-              <div class="camera-overlay" style="color: var(--accent-purple);">CAM-SOUTH-002 • PREEMPTION</div>
-              <canvas id="canvas2"></canvas>
-            </div>
-            <div class="camera-stats" style="margin-top: 0.75rem;">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">12</span></div>
-              <div class="stat-item"><span class="stat-label">Violations:</span><span class="stat-val" style="color: var(--accent-purple);">1 (TX-474-CG)</span></div>
-              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-purple);">90s OVERRIDE</span></div>
-            </div>
+        <!-- Real-Time ALPR Overspeeding Violations Table -->
+        <div class="glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚘 Real-Time ALPR Speed Violations & Enforcement Log</h2>
+            <span style="font-size: 0.75rem; color: var(--accent-purple); font-weight: 700;">ALPR Homography Speed Engine</span>
           </div>
-
-          <!-- Camera 3 -->
-          <div class="glass-panel">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span style="font-weight: 700; font-size: 0.95rem;">East Bridge Toll Plaza</span>
-              <span class="badge badge-severe">SEVERE (91.2)</span>
-            </div>
-            <div class="video-viewport">
-              <div class="camera-overlay" style="color: #ef4444;">CAM-EAST-003 • ACCIDENT ALERT</div>
-              <canvas id="canvas3"></canvas>
-            </div>
-            <div class="camera-stats" style="margin-top: 0.75rem;">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">45</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 km/h</span></div>
-              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
-            </div>
-          </div>
+          <table class="alpr-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Camera ID</th>
+                <th>Vehicle Class</th>
+                <th>License Plate</th>
+                <th>Measured Speed</th>
+                <th>Limit</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-08-20 02:45:12</td>
+                <td>CAM-SOUTH-002</td>
+                <td>Car (#2)</td>
+                <td><span class="alpr-plate">TX-474-CG</span></td>
+                <td style="color: var(--accent-red); font-weight: 800;">76.2 km/h</td>
+                <td>60 km/h</td>
+                <td><span class="badge badge-high">OVERSPEEDING</span></td>
+                <td><button class="btn-tab" style="padding: 2px 8px;" onclick="openEvidenceModal()">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>2026-08-20 02:42:04</td>
+                <td>CAM-NORTH-001</td>
+                <td>Motorcycle (#5)</td>
+                <td><span class="alpr-plate">CA-337-BD</span></td>
+                <td style="color: var(--accent-green); font-weight: 800;">48.5 km/h</td>
+                <td>60 km/h</td>
+                <td><span class="badge badge-low">NORMAL</span></td>
+                <td><button class="btn-tab" style="padding: 2px 8px;" onclick="openEvidenceModal()">Inspect</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 1.5rem;">
         <div class="glass-panel">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">🗺️ Smart City Map View</h2>
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">🗺️ Smart City GIS Map View</h2>
           <div id="map"></div>
         </div>
 
         <div class="glass-panel">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">📊 Traffic Flow Analytics</h2>
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">📊 Temporal Congestion Analytics</h2>
           <div class="chart-container">
             <canvas id="trafficChart"></canvas>
           </div>
@@ -244,10 +309,11 @@
     </div>
   </div>
 
+  <!-- Evidence Snapshot Modal -->
   <div class="modal-overlay" id="evidenceModal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-        <h3 style="color: #fff;">📸 Amazon S3 Evidence Snapshot</h3>
+        <h3 style="color: #fff;">📸 Amazon S3 Evidence Snapshot & ALPR Evidence</h3>
         <button class="modal-close" onclick="closeEvidenceModal()">&times;</button>
       </div>
       <div style="background: #000; border-radius: 8px; overflow: hidden; height: 300px; position: relative; margin-bottom: 1rem;">
@@ -296,25 +362,60 @@
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 
+    let currentViewMode = 'grid';
+
+    function switchView(mode) {
+      currentViewMode = mode;
+      document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
     function animateCanvas(id, carColor, hasAccident = false) {
       const cvs = document.getElementById(id);
       const ctx = cvs.getContext('2d');
-      cvs.width = 320; cvs.height = 200;
+      cvs.width = 320; cvs.height = 220;
       let x1 = 20, x2 = 140;
 
       function draw() {
-        ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, cvs.width, cvs.height);
-        ctx.strokeStyle = '#475569'; ctx.setLineDash([10, 10]);
-        ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(320, 100); ctx.stroke();
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, cvs.width, cvs.height);
 
-        x1 = (x1 + 2) % 320;
-        x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
+        if (currentViewMode === 'heatmap') {
+          // Render Spatial 8x8 Grid Heatmap Simulation
+          const cellW = cvs.width / 8;
+          const cellH = cvs.height / 8;
+          for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+              let alpha = ((r * 8 + c) % 5 === 0) ? 0.6 : 0.15;
+              ctx.fillStyle = `rgba(239, 68, 68, ${alpha})`;
+              ctx.fillRect(c * cellW, r * cellH, cellW - 1, cellH - 1);
+            }
+          }
+          ctx.fillStyle = '#fff';
+          ctx.font = '10px Inter';
+          ctx.fillText("SPATIAL DENSITY HEATMAP (8x8)", 10, 20);
+        } else {
+          ctx.strokeStyle = '#334155'; ctx.setLineDash([8, 8]);
+          ctx.beginPath(); ctx.moveTo(0, 110); ctx.lineTo(320, 110); ctx.stroke();
 
-        ctx.strokeStyle = carColor; ctx.lineWidth = 2;
-        ctx.strokeRect(x1, 50, 40, 24); ctx.fillStyle = carColor; ctx.fillText("CAR [TX-474-CG]", x1, 44);
-        ctx.strokeRect(x2, 120, 45, 26); ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 114);
+          x1 = (x1 + 2) % 320;
+          x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
 
-        if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 115, 55, 36); }
+          // Draw Vehicle Bounding Boxes & Direction Vectors
+          ctx.strokeStyle = carColor; ctx.lineWidth = 2;
+          ctx.strokeRect(x1, 55, 42, 26);
+          ctx.fillStyle = carColor; ctx.font = '10px Inter';
+          ctx.fillText("CAR #1 [TX-474-CG]", x1, 48);
+
+          // Motion Velocity Vector Line
+          ctx.beginPath(); ctx.moveTo(x1 + 42, 68); ctx.lineTo(x1 + 55, 68); ctx.stroke();
+
+          ctx.strokeStyle = hasAccident ? '#ef4444' : '#c084fc';
+          ctx.strokeRect(x2, 130, 48, 28);
+          ctx.fillStyle = hasAccident ? '#ef4444' : '#c084fc';
+          ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 122);
+
+          if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 125, 58, 38); }
+        }
         requestAnimationFrame(draw);
       }
       draw();

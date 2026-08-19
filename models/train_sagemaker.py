@@ -41,7 +41,7 @@ def apply_spatial_temporal_augmentation(X_tensor: torch.Tensor) -> torch.Tensor:
     
     return augmented
 
-def generate_augmented_dataset(num_samples: int = 100, sequence_length: int = 16, channels: int = 3, height: int = 112, width: int = 112) -> Tuple[torch.Tensor, torch.Tensor]:
+def generate_augmented_dataset(num_samples: int = 200, sequence_length: int = 16, channels: int = 3, height: int = 112, width: int = 112) -> Tuple[torch.Tensor, torch.Tensor]:
     """Generates expanded, augmented 16-frame spatial-temporal sequence tensor dataset."""
     logger.info(f"Generating expanded synthetic dataset ({num_samples} 16-frame video sequence tensors)...")
     X = np.random.randn(num_samples, sequence_length, channels, height, width).astype(np.float32)
@@ -61,11 +61,11 @@ def calculate_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[s
     tn = int(np.sum((y_true == 0) & (y_pred == 0)))
     return {"TP": tp, "FP": fp, "FN": fn, "TN": tn}
 
-def train_and_evaluate(epochs: Any = 5, batch_size: int = 4, lr: float = 0.001):
+def train_and_evaluate(epochs: Any = 10, batch_size: int = 8, lr: float = 0.001):
     if hasattr(epochs, "epochs"):
         args = epochs
-        epochs = getattr(args, "epochs", 5)
-        batch_size = getattr(args, "batch_size", 4)
+        epochs = getattr(args, "epochs", 10)
+        batch_size = getattr(args, "batch_size", 8)
         lr = getattr(args, "lr", 0.001)
         
     logger.info("==================================================")

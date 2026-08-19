@@ -66,6 +66,7 @@ pipeline {
                     python3 tests/test_phase22_spatial_heatmap.py
                     python3 tests/test_phase23_edge_health.py
                     python3 tests/verify_frontend_dom.py
+                    python3 tests/run_all_diagnostics.py
                 '''
             }
         }

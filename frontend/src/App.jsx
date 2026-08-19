@@ -6,6 +6,8 @@ export default function App() {
     activeCameras: 3,
     totalVehicles: 85,
     cityCongestion: 'HIGH',
+    congestionIndex: 78.4,
+    recommendedGreenSec: 45,
     activeAccidents: 1
   });
 
@@ -17,6 +19,9 @@ export default function App() {
       speed: 8.5,
       density: 'HIGH',
       congestion: 'HIGH',
+      congestionIndex: 72.0,
+      recommendedGreenSec: 45,
+      minTtcSec: 4.2,
       status: 'ACTIVE'
     },
     {
@@ -26,6 +31,9 @@ export default function App() {
       speed: 32.0,
       density: 'MEDIUM',
       congestion: 'LOW',
+      congestionIndex: 18.5,
+      recommendedGreenSec: 20,
+      minTtcSec: 12.8,
       status: 'ACTIVE'
     },
     {
@@ -35,6 +43,9 @@ export default function App() {
       speed: 3.2,
       density: 'HIGH',
       congestion: 'SEVERE',
+      congestionIndex: 91.2,
+      recommendedGreenSec: 60,
+      minTtcSec: 0.8,
       status: 'ACTIVE'
     }
   ]);
@@ -45,7 +56,7 @@ export default function App() {
       cameraId: 'CAM-EAST-003',
       location: 'East Bridge Toll Plaza',
       time: '10:43:12 UTC',
-      confidence: 0.94,
+      confidence: 0.945,
       severity: 'CRITICAL',
       snapshotUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600'
     }
@@ -59,7 +70,7 @@ export default function App() {
           <span>🚦</span> SMART CITY TRAFFIC & ACCIDENT AI CONTROL ROOM
         </div>
         <div className="status-badge">
-          <span className="pulse-dot"></span> AWS IoT Greengrass Edge Nodes Active
+          <span className="pulse-dot"></span> AWS Greengrass Edge Compute Engine Active
         </div>
       </header>
 
@@ -71,7 +82,7 @@ export default function App() {
               🚨 CRITICAL ACCIDENT DETECTED — {accidents[0].location} [{accidents[0].cameraId}]
             </h3>
             <p style={{ color: '#fca5a5', fontSize: '0.875rem' }}>
-              AI Confidence: {(accidents[0].confidence * 100).toFixed(1)}% | Severity: {accidents[0].severity} | Time: {accidents[0].time}
+              AI Spatial-Temporal Confidence: {(accidents[0].confidence * 100).toFixed(1)}% | Time-To-Collision: 0.8s | Severity: {accidents[0].severity}
             </p>
           </div>
           <button 
@@ -94,7 +105,7 @@ export default function App() {
       {/* Real-Time Metrics Overview Grid */}
       <div className="metrics-grid">
         <div className="glass-panel metric-card">
-          <span className="metric-label">Monitored Cameras</span>
+          <span className="metric-label">Monitored Junctions</span>
           <span className="metric-value" style={{ color: '#38bdf8' }}>{metrics.activeCameras}</span>
         </div>
         <div className="glass-panel metric-card">
@@ -102,8 +113,8 @@ export default function App() {
           <span className="metric-value" style={{ color: '#818cf8' }}>{metrics.totalVehicles}</span>
         </div>
         <div className="glass-panel metric-card">
-          <span className="metric-label">City Congestion</span>
-          <span className="metric-value" style={{ color: '#f59e0b' }}>{metrics.cityCongestion}</span>
+          <span className="metric-label">Congestion Index</span>
+          <span className="metric-value" style={{ color: '#f59e0b' }}>{metrics.congestionIndex}/100</span>
         </div>
         <div className="glass-panel metric-card">
           <span className="metric-label">Active Accidents</span>
@@ -113,31 +124,31 @@ export default function App() {
 
       {/* Live Camera Grid Section */}
       <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>
-        🎥 Live Edge Camera Feeds & AI Metrics
+        🎥 Live Edge Video Feeds & Adaptive Signal Timing
       </h2>
       <div className="camera-grid">
         {cameras.map((cam) => (
           <div key={cam.id} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontWeight: '700', fontSize: '1rem' }}>{cam.name}</span>
-              <span className={`badge badge-${cam.congestion.toLowerCase()}`}>{cam.congestion}</span>
+              <span className={`badge badge-${cam.congestion.toLowerCase()}`}>{cam.congestion} ({cam.congestionIndex})</span>
             </div>
             
             <div className="video-frame-placeholder">
               <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>
-                REC • 30 FPS | YOLOv8 + ByteTrack
+                REC • 30 FPS | YOLOv8 + ByteTrack + CNN-LSTM
               </div>
               <div style={{ textAlign: 'center', color: '#94a3b8' }}>
                 <span style={{ fontSize: '2.5rem', display: 'block' }}>📹</span>
-                Live RTSP Video Stream [{cam.id}]
+                Live RTSP Stream [{cam.id}]
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.85rem' }}>
               <div><span style={{ color: '#94a3b8' }}>Vehicles:</span> <strong>{cam.count}</strong></div>
               <div><span style={{ color: '#94a3b8' }}>Avg Speed:</span> <strong>{cam.speed} px/f</strong></div>
-              <div><span style={{ color: '#94a3b8' }}>Density:</span> <strong>{cam.density}</strong></div>
-              <div><span style={{ color: '#94a3b8' }}>Node Status:</span> <strong style={{ color: '#10b981' }}>{cam.status}</strong></div>
+              <div><span style={{ color: '#94a3b8' }}>Min TTC:</span> <strong style={{ color: cam.minTtcSec < 2.0 ? '#ef4444' : '#10b981' }}>{cam.minTtcSec}s</strong></div>
+              <div><span style={{ color: '#94a3b8' }}>Rec. Green Light:</span> <strong style={{ color: '#38bdf8' }}>{cam.recommendedGreenSec}s</strong></div>
             </div>
           </div>
         ))}

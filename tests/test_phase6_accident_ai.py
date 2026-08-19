@@ -32,14 +32,14 @@ def test_accident_ai():
         tracks = tracker.update(detections)
         
         accident_engine.add_frame(prep_frame)
-        prob, is_acc = accident_engine.predict_accident_probability(tracks)
+        prob, is_acc, min_ttc = accident_engine.predict_accident_probability(tracks)
         
         max_prob = max(max_prob, prob)
         if is_acc:
             accident_triggered = True
             
         if frame_count in [5, 16, 20]:
-            print(f"Frame {frame_count:02d}: Buffer Size: {len(accident_engine.frame_buffer)}/16 | Accident Prob: {prob:.3f} | Alert: {'YES' if is_acc else 'NO'}")
+            print(f"Frame {frame_count:02d}: Buffer Size: {len(accident_engine.frame_buffer)}/16 | Accident Prob: {prob:.3f} | Min TTC: {min_ttc}s | Alert: {'YES' if is_acc else 'NO'}")
             
         if frame_count >= 25:
             break

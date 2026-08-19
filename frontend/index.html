@@ -29,11 +29,7 @@
       --font-heading: 'Outfit', system-ui, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg-dark);
@@ -43,92 +39,27 @@
       padding: 1.5rem;
       background-image: 
         radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.1) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+        radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.1) 0px, transparent 50%);
     }
 
-    .container {
-      max-width: 1700px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
+    .container { max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
 
-    /* Glassmorphic Panel */
     .glass-panel {
       background: var(--panel-bg);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
       border-radius: 16px;
       padding: 1.25rem;
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-      transition: all 0.3s ease;
     }
 
-    .glass-panel:hover {
-      border-color: rgba(56, 189, 248, 0.25);
-    }
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.75rem; }
+    .brand-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* Header Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.75rem;
-    }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background-color: currentColor; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 0.4; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .brand-icon {
-      font-size: 2rem;
-      filter: drop-shadow(0 0 10px var(--accent-blue));
-    }
-
-    .brand-title {
-      font-family: var(--font-heading);
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.12);
-      color: var(--accent-green);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: currentColor;
-      box-shadow: 0 0 10px currentColor;
-      animation: pulse 1.8s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.3); opacity: 0.4; }
-      100% { transform: scale(0.95); opacity: 0.8; }
-    }
-
-    /* Emergency Alert Banner */
     .alert-banner {
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.45) 100%);
       border: 1px solid var(--accent-red);
@@ -139,407 +70,162 @@
       align-items: center;
       animation: alertGlow 2s infinite alternate;
     }
+    @keyframes alertGlow { 0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); } 100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); } }
 
-    @keyframes alertGlow {
-      0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
-      100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); }
-    }
+    .btn-alert { background: #ef4444; color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
 
-    .alert-info h3 {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem; }
+    .metric-card { display: flex; flex-direction: column; gap: 0.5rem; }
+    .metric-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
+    .metric-value { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; }
 
-    .alert-info p {
-      color: #fca5a5;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-    }
+    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+    @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
 
-    .btn-alert {
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      padding: 0.65rem 1.3rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
-      transition: all 0.2s ease;
-    }
+    .camera-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
+    .badge { padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-low { background: rgba(16, 185, 129, 0.18); color: var(--accent-green); }
+    .badge-medium { background: rgba(245, 158, 11, 0.18); color: var(--accent-yellow); }
+    .badge-high { background: rgba(239, 68, 68, 0.18); color: var(--accent-red); }
+    .badge-severe { background: rgba(225, 29, 72, 0.25); color: #f43f5e; border: 1px solid #f43f5e; }
 
-    .btn-alert:hover {
-      transform: translateY(-2px);
-      background: #dc2626;
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-    }
+    .video-viewport { width: 100%; height: 200px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
+    .video-viewport canvas { width: 100%; height: 100%; object-fit: cover; }
+    .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #38bdf8; }
 
-    /* Metric Cards Grid */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .metric-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .metric-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-    }
-
-    .card-blue::before { background: var(--accent-blue); }
-    .card-indigo::before { background: var(--accent-indigo); }
-    .card-yellow::before { background: var(--accent-yellow); }
-    .card-red::before { background: var(--accent-red); }
-
-    .metric-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-secondary);
-    }
-
-    .metric-value {
-      font-family: var(--font-heading);
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .metric-sub {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    /* Main Section Grid */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 1200px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: var(--font-heading);
-      font-size: 1.25rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Camera Stream Grid */
-    .camera-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .camera-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-    }
-
-    .camera-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .camera-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .badge {
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-low { background: rgba(16, 185, 129, 0.18); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-medium { background: rgba(245, 158, 11, 0.18); color: var(--accent-yellow); border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-high { background: rgba(239, 68, 68, 0.18); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .badge-severe { background: rgba(225, 29, 72, 0.25); color: #f43f5e; border: 1px solid #f43f5e; box-shadow: 0 0 10px rgba(244, 63, 94, 0.4); }
-
-    .video-viewport {
-      width: 100%;
-      height: 200px;
-      background: #000;
-      border-radius: 10px;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .video-viewport canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .camera-overlay {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .camera-stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      background: rgba(255, 255, 255, 0.02);
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .stat-item {
-      display: flex;
-      justify-content: space-between;
-    }
-
+    .camera-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.8rem; background: rgba(255, 255, 255, 0.02); padding: 0.75rem; border-radius: 8px; }
     .stat-label { color: var(--text-secondary); }
     .stat-val { font-weight: 700; color: #fff; }
 
-    /* Map & Analytics Panel */
-    #map {
-      width: 100%;
-      height: 260px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 1.25rem;
-    }
-
-    .chart-container {
-      position: relative;
-      height: 200px;
-      width: 100%;
-    }
+    #map { width: 100%; height: 260px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1.25rem; }
+    .chart-container { position: relative; height: 200px; width: 100%; }
 
     /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content {
-      background: #0f172a;
-      border: 1px solid var(--accent-red);
-      border-radius: 16px;
-      max-width: 650px;
-      width: 90%;
-      padding: 1.5rem;
-      box-shadow: 0 20px 50px rgba(239, 68, 68, 0.4);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .modal-close {
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { background: #0f172a; border: 1px solid var(--accent-red); border-radius: 16px; max-width: 650px; width: 90%; padding: 1.5rem; }
+    .modal-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Header Navbar -->
     <header class="navbar glass-panel">
-      <div class="brand">
-        <span class="brand-icon">🚦</span>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span style="font-size: 2rem;">🚦</span>
         <div>
           <h1 class="brand-title">SMART CITY TRAFFIC & ACCIDENT AI CONTROL CENTER</h1>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Compute Engine v1.0.0</span>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | Adaptive Signal Timing Advisor</span>
         </div>
       </div>
       <div class="status-badge">
-        <span class="pulse-dot"></span> 3 AWS Greengrass Edge Nodes Active
+        <span class="pulse-dot"></span> 3 Edge AI Greengrass Nodes Active
       </div>
     </header>
 
-    <!-- Emergency Accident Alert Banner -->
     <div class="alert-banner" id="accidentAlertBanner">
-      <div class="alert-info">
-        <h3>🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
-        <p>AI Spatial-Temporal Confidence: 94.5% | Kinematic Anomaly: HIGH | Time: 10:43:12 UTC</p>
+      <div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
+        <p style="color: #fca5a5; font-size: 0.875rem;">AI Spatial-Temporal Confidence: 94.5% | Time-To-Collision (TTC): 0.8s | Severity: CRITICAL</p>
       </div>
       <button class="btn-alert" onclick="openEvidenceModal()">Inspect S3 Evidence Snapshot</button>
     </div>
 
-    <!-- Metrics Cards Grid -->
     <div class="metrics-grid">
-      <div class="glass-panel metric-card card-blue">
+      <div class="glass-panel metric-card">
         <span class="metric-label">Monitored Junctions</span>
-        <span class="metric-value" style="color: var(--accent-blue);" id="valCameras">3</span>
+        <span class="metric-value" style="color: var(--accent-blue);">3</span>
         <span class="metric-sub">Active RTSP Camera Feeds</span>
       </div>
-      <div class="glass-panel metric-card card-indigo">
+      <div class="glass-panel metric-card">
         <span class="metric-label">Tracked Vehicles</span>
-        <span class="metric-value" style="color: var(--accent-indigo);" id="valVehicles">85</span>
-        <span class="metric-sub">ByteTrack Multi-Object Tracking</span>
+        <span class="metric-value" style="color: var(--accent-indigo);">85</span>
+        <span class="metric-sub">ByteTrack Persistent Tracking</span>
       </div>
-      <div class="glass-panel metric-card card-yellow">
-        <span class="metric-label">City Congestion</span>
-        <span class="metric-value" style="color: var(--accent-yellow);" id="valCongestion">HIGH</span>
-        <span class="metric-sub">Road Occupancy: 52.4%</span>
+      <div class="glass-panel metric-card">
+        <span class="metric-label">City Congestion Index</span>
+        <span class="metric-value" style="color: var(--accent-yellow);">78.4 / 100</span>
+        <span class="metric-sub">Occupancy: 52.4% | Stopped: 38%</span>
       </div>
-      <div class="glass-panel metric-card card-red">
+      <div class="glass-panel metric-card">
         <span class="metric-label">Active Accidents</span>
-        <span class="metric-value" style="color: var(--accent-red);" id="valAccidents">1</span>
+        <span class="metric-value" style="color: var(--accent-red);">1</span>
         <span class="metric-sub">Amazon SNS Alert Dispatched</span>
       </div>
     </div>
 
-    <!-- Main Grid Section -->
     <div class="main-grid">
-      <!-- Live Camera Grid -->
       <div class="glass-panel">
-        <div class="section-header">
-          <h2 class="section-title">🎥 Live Edge Video Feeds & AI Telemetry</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & Adaptive Signal Control</h2>
           <span style="font-size: 0.8rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + PyTorch CNN-LSTM</span>
         </div>
         
         <div class="camera-grid">
           <!-- Camera 1 -->
-          <div class="camera-card glass-panel">
-            <div class="camera-meta">
-              <span class="camera-name">North Junction & 5th Ave</span>
-              <span class="badge badge-high">HIGH</span>
+          <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; font-size: 0.95rem;">North Junction & 5th Ave</span>
+              <span class="badge badge-high">HIGH (72.0)</span>
             </div>
             <div class="video-viewport">
               <div class="camera-overlay">CAM-NORTH-001 • 30 FPS</div>
               <canvas id="canvas1"></canvas>
             </div>
-            <div class="camera-stats">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val" id="cam1_count">28</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" id="cam1_speed">8.5 px/f</span></div>
-              <div class="stat-item"><span class="stat-label">Density:</span><span class="stat-val">HIGH</span></div>
-              <div class="stat-item"><span class="stat-label">Accident Prob:</span><span class="stat-val" style="color: var(--accent-green);">2.4%</span></div>
+            <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">28</span></div>
+              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val">8.5 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
             </div>
           </div>
 
           <!-- Camera 2 -->
-          <div class="camera-card glass-panel">
-            <div class="camera-meta">
-              <span class="camera-name">South Expressway Exit 12</span>
-              <span class="badge badge-low">LOW</span>
+          <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; font-size: 0.95rem;">South Expressway Exit 12</span>
+              <span class="badge badge-low">LOW (18.5)</span>
             </div>
             <div class="video-viewport">
               <div class="camera-overlay">CAM-SOUTH-002 • 30 FPS</div>
               <canvas id="canvas2"></canvas>
             </div>
-            <div class="camera-stats">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val" id="cam2_count">12</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" id="cam2_speed">32.0 px/f</span></div>
-              <div class="stat-item"><span class="stat-label">Density:</span><span class="stat-val">MEDIUM</span></div>
-              <div class="stat-item"><span class="stat-label">Accident Prob:</span><span class="stat-val" style="color: var(--accent-green);">0.8%</span></div>
+            <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">12</span></div>
+              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val">32.0 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-blue);">20 sec</span></div>
             </div>
           </div>
 
           <!-- Camera 3 -->
-          <div class="camera-card glass-panel">
-            <div class="camera-meta">
-              <span class="camera-name">East Bridge Toll Plaza</span>
-              <span class="badge badge-severe">SEVERE</span>
+          <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; font-size: 0.95rem;">East Bridge Toll Plaza</span>
+              <span class="badge badge-severe">SEVERE (91.2)</span>
             </div>
             <div class="video-viewport">
-              <div class="camera-overlay" style="color: #ef4444; border-color: #ef4444;">CAM-EAST-003 • ALERT</div>
+              <div class="camera-overlay" style="color: #ef4444;">CAM-EAST-003 • ACCIDENT ALERT</div>
               <canvas id="canvas3"></canvas>
             </div>
-            <div class="camera-stats">
-              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val" id="cam3_count">45</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" id="cam3_speed" style="color: var(--accent-red);">1.2 px/f</span></div>
-              <div class="stat-item"><span class="stat-label">Density:</span><span class="stat-val" style="color: var(--accent-red);">HIGH</span></div>
-              <div class="stat-item"><span class="stat-label">Accident Prob:</span><span class="stat-val" style="color: var(--accent-red);">94.5%</span></div>
+            <div class="camera-stats" style="margin-top: 0.75rem;">
+              <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">45</span></div>
+              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Map & Real-time Graph Panel -->
       <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-        <!-- Leaflet Map Panel -->
         <div class="glass-panel">
-          <div class="section-header">
-            <h2 class="section-title">🗺️ Smart City Map View</h2>
-          </div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">🗺️ Smart City Map View</h2>
           <div id="map"></div>
         </div>
 
-        <!-- Real-Time Chart Panel -->
         <div class="glass-panel">
-          <div class="section-header">
-            <h2 class="section-title">📊 Traffic Flow Analytics</h2>
-          </div>
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">📊 Traffic Flow Analytics</h2>
           <div class="chart-container">
             <canvas id="trafficChart"></canvas>
           </div>
@@ -548,59 +234,43 @@
     </div>
   </div>
 
-  <!-- Evidence Snapshot Modal -->
   <div class="modal-overlay" id="evidenceModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 style="font-family: var(--font-heading); color: #fff;">📸 Amazon S3 Accident Evidence Snapshot</h3>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+        <h3 style="color: #fff;">📸 Amazon S3 Evidence Snapshot</h3>
         <button class="modal-close" onclick="closeEvidenceModal()">&times;</button>
       </div>
       <div style="background: #000; border-radius: 8px; overflow: hidden; height: 300px; position: relative; margin-bottom: 1rem;">
         <canvas id="evidenceCanvas" style="width: 100%; height: 100%;"></canvas>
         <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(239,68,68,0.85); color: #fff; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.85rem;">
-          ACCIDENT DETECTED (CONFIDENCE: 94.5%)
+          ACCIDENT DETECTED (CONFIDENCE: 94.5% | TTC: 0.8s)
         </div>
       </div>
       <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-        <strong>S3 Key:</strong> <code>accidents/CAM-EAST-003/2026-08-19/acc_9842.jpg</code><br>
+        <strong>S3 Object Key:</strong> <code>accidents/CAM-EAST-003/2026-08-19/acc_9842.jpg</code><br>
         <strong>Presigned HTTPS URL:</strong> Active (Expires in 58 mins)
       </p>
-      <button class="btn-alert" style="width: 100%;" onclick="closeEvidenceModal()">Close Evidence Inspection</button>
+      <button class="btn-alert" style="width: 100%;" onclick="closeEvidenceModal()">Close Inspection</button>
     </div>
   </div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
-    // Initialize Leaflet Map
     const map = L.map('map').setView([40.7128, -74.0060], 12);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 
-    // Add Camera Pins to Map
     const cams = [
       { name: "CAM-NORTH-001 (North Junction)", lat: 40.712776, lng: -74.005974, color: "#f59e0b" },
       { name: "CAM-SOUTH-002 (South Expressway)", lat: 40.705000, lng: -74.011000, color: "#10b981" },
       { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#ef4444" }
     ];
-
     cams.forEach(c => {
-      const circle = L.circleMarker([c.lat, c.lng], {
-        color: c.color,
-        fillColor: c.color,
-        fillOpacity: 0.8,
-        radius: 9
-      }).addTo(map);
-      circle.bindPopup(`<b>${c.name}</b>`);
+      L.circleMarker([c.lat, c.lng], { color: c.color, fillColor: c.color, fillOpacity: 0.8, radius: 9 }).addTo(map).bindPopup(`<b>${c.name}</b>`);
     });
 
-    // Initialize Chart.js
     const ctx = document.getElementById('trafficChart').getContext('2d');
-    const chart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'],
@@ -613,59 +283,28 @@
           tension: 0.4
         }]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
-        }
-      }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 
-    // Synthetic Canvas Stream Simulator (Vehicle Motion Visualization)
     function animateCanvas(id, carColor, hasAccident = false) {
       const cvs = document.getElementById(id);
       const ctx = cvs.getContext('2d');
-      cvs.width = 320;
-      cvs.height = 200;
-
-      let x1 = 20, x2 = 140, x3 = 240;
+      cvs.width = 320; cvs.height = 200;
+      let x1 = 20, x2 = 140;
 
       function draw() {
-        ctx.fillStyle = '#1e293b';
-        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.strokeStyle = '#475569'; ctx.setLineDash([10, 10]);
+        ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(320, 100); ctx.stroke();
 
-        // Draw Lanes
-        ctx.strokeStyle = '#475569';
-        ctx.setLineDash([10, 10]);
-        ctx.beginPath();
-        ctx.moveTo(0, 100); ctx.lineTo(320, 100);
-        ctx.stroke();
-
-        // Move Cars
         x1 = (x1 + 2) % 320;
-        x2 = (x2 + (hasAccident ? 0.2 : 3)) % 320;
-        x3 = (x3 + (hasAccident ? 0.2 : 2.5)) % 320;
+        x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
 
-        // Draw Bounding Boxes (YOLO Simulation)
-        ctx.strokeStyle = carColor;
-        ctx.lineWidth = 2;
-        
-        ctx.strokeRect(x1, 50, 40, 24);
-        ctx.fillStyle = carColor;
-        ctx.fillText("CAR 0.94", x1, 44);
+        ctx.strokeStyle = carColor; ctx.lineWidth = 2;
+        ctx.strokeRect(x1, 50, 40, 24); ctx.fillStyle = carColor; ctx.fillText("CAR 0.94", x1, 44);
+        ctx.strokeRect(x2, 120, 45, 26); ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "CAR 0.91", x2, 114);
 
-        ctx.strokeRect(x2, 120, 45, 26);
-        ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "CAR 0.91", x2, 114);
-
-        if (hasAccident) {
-          // Crash flash effect
-          ctx.strokeStyle = '#ef4444';
-          ctx.strokeRect(x2 - 5, 115, 55, 36);
-        }
-
+        if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 115, 55, 36); }
         requestAnimationFrame(draw);
       }
       draw();
@@ -676,13 +315,8 @@
     animateCanvas('canvas3', '#ef4444', true);
     animateCanvas('evidenceCanvas', '#ef4444', true);
 
-    // Modal Handlers
-    function openEvidenceModal() {
-      document.getElementById('evidenceModal').classList.add('active');
-    }
-    function closeEvidenceModal() {
-      document.getElementById('evidenceModal').classList.remove('active');
-    }
+    function openEvidenceModal() { document.getElementById('evidenceModal').classList.add('active'); }
+    function closeEvidenceModal() { document.getElementById('evidenceModal').classList.remove('active'); }
   </script>
 </body>
 </html>

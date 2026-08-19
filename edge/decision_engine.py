@@ -16,9 +16,9 @@ logger = logging.getLogger("DecisionEngine")
 
 class LocalDecisionEngine:
     """
-    Edge Local Decision & Event Aggregation Engine.
-    Combines Vehicle Detection, ByteTrack Tracking, Traffic Density/Congestion,
-    and Spatial-Temporal CNN-LSTM Accident Detection into structured JSON event streams.
+    Advanced Edge Decision & Real-Time Event Engine.
+    Integrates YOLOv8 detection, ByteTrack tracking, Congestion Index scoring,
+    Adaptive Traffic Signal Timing, PyTorch CNN-LSTM accident probability, and Time-To-Collision (TTC) physics.
     """
     def __init__(
         self,
@@ -42,26 +42,26 @@ class LocalDecisionEngine:
 
     def process_frame(self, frame_idx: int, timestamp_ms: float, raw_frame: np.ndarray, prep_frame: np.ndarray) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         """
-        Processes a single video frame through the complete AI vision pipeline.
+        Processes a single video frame through the AI vision pipeline.
         Returns: (telemetry_event, accident_event)
         """
-        # 1. Detection & Tracking
+        # 1. Detection & Multi-Object Tracking
         detections = self.detector.detect(prep_frame)
         tracks = self.tracker.update(detections)
         
-        # 2. Traffic Analysis
+        # 2. Traffic Flow & Adaptive Signal Timing Analysis
         traffic_metrics = self.analyzer.analyze(tracks)
         
-        # 3. Spatial-Temporal Accident Detection
+        # 3. Spatial-Temporal & Physics TTC Accident Detection
         self.accident_engine.add_frame(prep_frame)
-        accident_prob, is_accident = self.accident_engine.predict_accident_probability(tracks)
+        accident_prob, is_accident, min_ttc_sec = self.accident_engine.predict_accident_probability(tracks)
         
         telemetry_event = None
         accident_event = None
         
         current_time = time.time()
         
-        # 4. Periodic Routine Telemetry Emission
+        # 4. Periodic Routine Telemetry Payload Emission
         if (current_time - self.last_telemetry_time) >= self.telemetry_interval_sec:
             self.last_telemetry_time = current_time
             telemetry_event = {
@@ -69,22 +69,23 @@ class LocalDecisionEngine:
                 "camera_id": self.camera_id,
                 "timestamp_ms": int(timestamp_ms),
                 "metrics": traffic_metrics,
-                "accident_probability": accident_prob
+                "accident_probability": accident_prob,
+                "min_time_to_collision_sec": min_ttc_sec
             }
 
-        # 5. Immediate High-Priority Accident Event Emission
+        # 5. High-Priority Emergency Accident Event Emission
         if is_accident:
             snapshot_filename = f"accident_{self.camera_id}_{int(timestamp_ms)}.jpg"
             snapshot_path = os.path.join(self.evidence_dir, snapshot_filename)
             
-            # Annotate snapshot frame with detection boxes & alert text
+            # Draw detections and alert banner on evidence snapshot
             annotated_frame = self.detector.draw_detections(prep_frame, detections)
             cv2.putText(
                 annotated_frame,
                 f"CRITICAL ACCIDENT DETECTED ({int(accident_prob*100)}%)",
                 (30, 50),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                1.0,
+                0.9,
                 (0, 0, 255),
                 3
             )
@@ -97,6 +98,7 @@ class LocalDecisionEngine:
                 "timestamp_ms": int(timestamp_ms),
                 "severity": "CRITICAL" if accident_prob >= 0.85 else "MODERATE",
                 "accident_probability": accident_prob,
+                "min_time_to_collision_sec": min_ttc_sec,
                 "snapshot_local_path": snapshot_path,
                 "traffic_snapshot": traffic_metrics
             }

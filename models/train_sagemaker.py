@@ -9,10 +9,16 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 
-# Add project root to sys.path
+# Add current working directory and project root to sys.path
+cwd = os.getcwd()
+sys.path.insert(0, cwd)
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from models.cnn_lstm.accident_net import SpatialTemporalAccidentNet
+try:
+    from models.cnn_lstm.accident_net import SpatialTemporalAccidentNet
+except ImportError:
+    from cnn_lstm.accident_net import SpatialTemporalAccidentNet
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("SageMakerTrainer")

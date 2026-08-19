@@ -25,7 +25,7 @@ def verify_frontend():
         ("Canvas Viewports", [r'id="canvas1"', r'id="canvas2"', r'id="canvas3"']),
         ("View Switcher Buttons", [r"2x2 Grid View", r"Spatial Heatmap View"]),
         ("ALPR Speed Table", r"Real-Time ALPR Speed Violations & Enforcement Log"),
-        ("ALPR Plates", [r"TX-474-CG", r"CA-337-BD"]),
+        ("ALPR Plates", [r"UP16-CV-9842", r"UP14-BT-5510"]),
         ("Leaflet Map Container", r'id="map"'),
         ("Chart.js Analytics", r'id="trafficChart"'),
         ("Evidence Modal Canvas", r'id="evidenceCanvas"'),

@@ -67,6 +67,7 @@ pipeline {
                     python3 tests/test_phase23_edge_health.py
                     python3 tests/verify_frontend_dom.py
                     python3 tests/test_phase24_rerouting.py
+                    python3 tests/test_phase25_emergency_dispatch.py
                     python3 tests/run_all_diagnostics.py
                 '''
             }

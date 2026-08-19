@@ -1,0 +1,48 @@
+name: Smart City Traffic AI CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Automated Test Suites (Phases 1 - 18)
+      run: |
+        python tests/test_phase1_environment.py
+        python tests/test_phase2_video_pipeline.py
+        python tests/test_phase3_vehicle_detection.py
+        python tests/test_phase4_tracking.py
+        python tests/test_phase5_traffic_analysis.py
+        python tests/test_phase6_accident_ai.py
+        python tests/test_phase7_local_prototype.py
+        python tests/test_phase8_s3.py
+        python tests/test_phase10_iot_core.py
+        python tests/test_phase11_greengrass.py
+        python tests/test_phase12_kinesis_lambda.py
+        python tests/test_phase13_database.py
+        python tests/test_phase14_sns_alerts.py
+        python tests/test_phase15_api.py
+        python tests/test_phase16_react_ui.py
+        python tests/test_phase17_cloudfront.py
+
+    - name: Build Docker Container Image
+      run: |
+        docker build -t smartcity-edge-ai:latest -f edge/Dockerfile .

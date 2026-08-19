@@ -166,7 +166,7 @@
           <h2 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚑 Multi-Agency Emergency Dispatch & GPS Navigation Status</h2>
           <span style="font-size: 0.78rem; color: var(--text-secondary);">Target Alert Recipient: <strong style="color: var(--accent-yellow);">pawandubey6204385@gmail.com</strong> (SMS & Email Active)</span>
         </div>
-        <a href="https://www.google.com/maps/search/?api=1&query=28.485,77.475" target="_blank" class="btn-action" style="background: var(--accent-red); color: #fff; border: none; text-decoration: none;">🗺️ Open Google Maps Navigation (28.485, 77.475)</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=28.485,77.475" id="dispatchGmapsBtn" target="_blank" class="btn-action" style="background: var(--accent-red); color: #fff; border: none; text-decoration: none;">🗺️ Open Google Maps Navigation (28.485, 77.475)</a>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
@@ -264,6 +264,7 @@
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
                 <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: #60a5fa;">45 sec</span></div>
               </div>
+              <button class="btn-action" style="width: 100%; margin-top: 0.6rem; background: rgba(239,68,68,0.15); color: var(--accent-red); border-color: rgba(239,68,68,0.3); font-size: 0.75rem;" onclick="triggerCameraAccidentAlert('CAM-NORTH-001', 'Pari Chowk Junction', 28.4670, 77.5140, 'UP14-BT-5510', 'Motorcycle')">🚨 Report Accident on Feed</button>
             </div>
 
             <!-- Camera 2 -->
@@ -283,6 +284,7 @@
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
                 <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-purple);">90s OVERRIDE</span></div>
               </div>
+              <button class="btn-action" style="width: 100%; margin-top: 0.6rem; background: rgba(239,68,68,0.15); color: var(--accent-red); border-color: rgba(239,68,68,0.3); font-size: 0.75rem;" onclick="triggerCameraAccidentAlert('CAM-SOUTH-002', 'Knowledge Park II Exit', 28.4600, 77.4900, 'UP16-CV-9842', 'Car')">🚨 Report Accident on Feed</button>
             </div>
 
             <!-- Camera 3 -->
@@ -302,6 +304,7 @@
                 <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
                 <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
               </div>
+              <button class="btn-action" style="width: 100%; margin-top: 0.6rem; background: rgba(239,68,68,0.15); color: var(--accent-red); border-color: rgba(239,68,68,0.3); font-size: 0.75rem;" onclick="triggerCameraAccidentAlert('CAM-EAST-003', 'Noida-Greater Noida Expressway Toll', 28.4850, 77.4750, 'DL10-AK-4512', 'Truck')">🚨 Report Accident on Feed</button>
             </div>
           </div>
         </div>
@@ -482,6 +485,23 @@
             "🚓 UP Traffic Police Control (112): NOTIFIED (1.8 km away | ETA: 3.2 mins)\n" +
             "🚒 Fire & Rescue Station Sec 32: STANDBY (4.1 km away | ETA: 6.0 mins)\n\n" +
             "📩 Email & SMS with Live Google Maps Navigation Link Sent to: pawandubey6204385@gmail.com!");
+    }
+
+    function triggerCameraAccidentAlert(camId, locName, lat, lng, plate, vehicleClass) {
+      const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      alert(`🚨 ACCIDENT REPORTED ON ${camId}!\n\n` +
+            `📍 Location: ${locName}\n` +
+            `🗺️ GPS Coordinates: ${lat}° N, ${lng}° E\n` +
+            `🚘 Extracted Vehicle: ${vehicleClass} [${plate}]\n\n` +
+            `🏥 Fortis Hospital Ambulance (108): DISPATCHED (2.8 km away | ETA: 4.0 mins)\n` +
+            `🚓 UP Traffic Police Control (112): NOTIFIED (1.5 km away | ETA: 2.8 mins)\n\n` +
+            `📩 Automated Email & SMS with Live GPS Link Sent to: pawandubey6204385@gmail.com!`);
+
+      const elGmapsBtn = document.getElementById('dispatchGmapsBtn');
+      if (elGmapsBtn) {
+        elGmapsBtn.href = gmapsUrl;
+        elGmapsBtn.innerText = `🗺️ Open Google Maps Navigation (${lat}, ${lng})`;
+      }
     }
 
     function filterALPRTable() {

@@ -1,0 +1,21 @@
+{
+  "region": "us-east-1",
+  "iot": {
+    "endpoint": "a3example-ats.iot.us-east-1.amazonaws.com",
+    "telemetry_topic_pattern": "smartcity/cameras/{camera_id}/traffic",
+    "accident_topic_pattern": "smartcity/cameras/{camera_id}/accidents"
+  },
+  "kinesis": {
+    "stream_name": "SmartCityTrafficEventsStream"
+  },
+  "dynamodb": {
+    "traffic_events_table": "SmartCity_TrafficEvents"
+  },
+  "s3": {
+    "evidence_bucket": "smart-city-traffic-evidence-demo",
+    "datalake_bucket": "smart-city-traffic-datalake-demo"
+  },
+  "sns": {
+    "alert_topic_name": "AccidentAlertTopic"
+  }
+}

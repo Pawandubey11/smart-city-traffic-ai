@@ -16,6 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN python data/create_sample_traffic_video.py
+
 ENV PYTHONUNBUFFERED=1
 
 CMD ["python", "edge/main.py", "--source", "data/sample_traffic.mp4"]

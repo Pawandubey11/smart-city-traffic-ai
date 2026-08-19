@@ -18,6 +18,15 @@ def run_edge_pipeline(video_source: str, camera_id: str, max_frames: int = 100):
     logger.info(f"STARTING SMART CITY EDGE AI SERVICE [{camera_id}]")
     logger.info("==================================================")
     
+    # Auto-generate sample video if missing
+    if not os.path.exists(video_source) and video_source.endswith(".mp4"):
+        logger.warning(f"Video file {video_source} not found. Auto-generating sample traffic video...")
+        try:
+            from data.create_sample_traffic_video import generate_sample_traffic_video
+            generate_sample_traffic_video(output_path=video_source)
+        except Exception as e:
+            logger.error(f"Could not auto-generate sample video: {e}")
+
     stream = VideoStreamReader(source=video_source, target_size=(640, 640), frame_sample_rate=1)
     engine = LocalDecisionEngine(camera_id=camera_id, telemetry_interval_sec=1.0)
     

@@ -23,21 +23,19 @@ except ImportError:
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("SageMakerTrainer")
 
-def generate_synthetic_training_data(num_samples: int = 40, seq_len: int = 16):
-    """Generates synthetic sequence tensors for SageMaker model training verification."""
+def generate_synthetic_training_data(num_samples: int = 20, seq_len: int = 16):
+    """Generates synthetic sequence tensors for SageMaker model training verification (memory optimized for small EC2 instances)."""
     logger.info(f"Generating synthetic training dataset: {num_samples} sequences of length {seq_len}")
     
-    # Half non-accident, half accident sequence tensors
     X_list = []
     y_list = []
     
     for i in range(num_samples):
-        # Shape: (16, 3, 224, 224)
-        seq = np.random.randn(seq_len, 3, 224, 224).astype(np.float32)
+        # Shape: (16, 3, 112, 112) - memory efficient for low-RAM instances
+        seq = np.random.randn(seq_len, 3, 112, 112).astype(np.float32)
         label = 1.0 if i >= (num_samples // 2) else 0.0
         
         if label == 1.0:
-            # Inject simulated high visual intensity motion in last 4 frames
             seq[-4:] += 2.5
             
         X_list.append(seq)
@@ -129,7 +127,7 @@ def train(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SageMaker PyTorch Accident Detection Model Trainer")
     parser.add_argument("--epochs", type=int, default=2)
-    parser.add_argument("--batch-size", type=int, default=4)
+    parser.add_argument("--batch-size", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--sequence-length", type=int, default=16)
     parser.add_argument("--num-gpus", type=int, default=0)

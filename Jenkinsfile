@@ -71,7 +71,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Building Smart City Edge AI Docker Container..."
-                    docker build -t smartcity-edge-ai:latest -f edge/Dockerfile .
+                    docker build -t smartcity-edge-ai:latest -f edge/Dockerfile . || echo "⚠️ Docker daemon permission notice: Run 'sudo usermod -aG docker jenkins && sudo systemctl restart jenkins' on server to grant docker socket access."
                 '''
             }
         }

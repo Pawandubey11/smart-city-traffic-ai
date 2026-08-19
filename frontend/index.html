@@ -162,27 +162,27 @@
     <div class="metrics-grid">
       <div class="panel metric-card">
         <span class="metric-label">Monitored Junctions</span>
-        <span class="metric-value" style="color: #60a5fa;">3</span>
+        <span class="metric-value" style="color: #60a5fa;" id="valJunctions">3</span>
         <span class="metric-sub">Active RTSP Camera Feeds</span>
       </div>
       <div class="panel metric-card">
         <span class="metric-label">Tracked Vehicles</span>
-        <span class="metric-value" style="color: #818cf8;">85</span>
+        <span class="metric-value" style="color: #818cf8;" id="valVehicles">85</span>
         <span class="metric-sub">ByteTrack Persistent Tracking</span>
       </div>
       <div class="panel metric-card">
         <span class="metric-label">City Congestion Index</span>
-        <span class="metric-value" style="color: var(--accent-yellow);">78.4 / 100</span>
-        <span class="metric-sub">Road Occupancy: 52.4%</span>
+        <span class="metric-value" style="color: var(--accent-yellow);" id="valCongestion">78.4 / 100</span>
+        <span class="metric-sub" id="valOccupancy">Road Occupancy: 52.4%</span>
       </div>
       <div class="panel metric-card">
         <span class="metric-label">Overspeeding Violations</span>
-        <span class="metric-value" style="color: var(--accent-purple);">4</span>
+        <span class="metric-value" style="color: var(--accent-purple);" id="valViolations">4</span>
         <span class="metric-sub">ALPR OCR Extracted</span>
       </div>
       <div class="panel metric-card">
         <span class="metric-label">Active Accidents</span>
-        <span class="metric-value" style="color: var(--accent-red);">1</span>
+        <span class="metric-value" style="color: var(--accent-red);" id="valAccidents">1</span>
         <span class="metric-sub">Amazon SNS Alert Dispatched</span>
       </div>
     </div>
@@ -502,6 +502,30 @@
 
     function openEvidenceModal() { document.getElementById('evidenceModal').classList.add('active'); }
     function closeEvidenceModal() { document.getElementById('evidenceModal').classList.remove('active'); }
+
+    // Real-Time Dynamic Telemetry Stream Synchronization (WebSocket/SSE Simulation)
+    let violationCounter = 4;
+    setInterval(() => {
+      // 1. Fluctuate Tracked Vehicles Count dynamically
+      const liveVehicles = Math.floor(80 + Math.random() * 18);
+      const elVehicles = document.getElementById('valVehicles');
+      if (elVehicles) elVehicles.innerText = liveVehicles;
+
+      // 2. Calculate Real-Time Congestion Index & Occupancy dynamically
+      const liveCongestion = (74.0 + Math.random() * 8.5).toFixed(1);
+      const liveOccupancy = (48.0 + Math.random() * 7.5).toFixed(1);
+      const elCongestion = document.getElementById('valCongestion');
+      const elOccupancy = document.getElementById('valOccupancy');
+      if (elCongestion) elCongestion.innerText = `${liveCongestion} / 100`;
+      if (elOccupancy) elOccupancy.innerText = `Road Occupancy: ${liveOccupancy}%`;
+
+      // 3. Increment Violations dynamically
+      if (Math.random() > 0.8) {
+        violationCounter++;
+        const elViolations = document.getElementById('valViolations');
+        if (elViolations) elViolations.innerText = violationCounter;
+      }
+    }, 1500);
   </script>
 </body>
 </html>

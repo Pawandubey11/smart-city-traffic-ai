@@ -16,7 +16,9 @@ pipeline {
         stage('Environment & Dependencies Setup') {
             steps {
                 sh '''
-                    echo "Setting up Python environment..."
+                    echo "Setting up Lightweight CPU Python environment..."
+                    rm -rf ~/.cache/pip /tmp/* || true
+                    
                     python3 -m venv venv || python3 -m venv --without-pip venv || true
                     
                     if [ -f venv/bin/python3 ]; then
@@ -27,11 +29,16 @@ pipeline {
                         fi
                         . venv/bin/activate
                         pip install --upgrade pip setuptools wheel --quiet || true
-                        pip install -r requirements.txt
+                        
+                        echo "Installing CPU PyTorch binaries (lightweight, zero CUDA bloat)..."
+                        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir
+                        
+                        echo "Installing remaining project requirements..."
+                        pip install -r requirements.txt --no-cache-dir
                     else
-                        echo "Fallback to user-level pip installation..."
-                        python3 -m pip install --user --upgrade pip || true
-                        python3 -m pip install --user -r requirements.txt
+                        echo "Fallback user-level installation..."
+                        pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu --no-cache-dir || true
+                        pip3 install -r requirements.txt --no-cache-dir || true
                     fi
                 '''
             }
@@ -69,6 +76,8 @@ pipeline {
 
     post {
         always {
+            echo "Cleaning up workspace cache..."
+            sh 'rm -rf ~/.cache/pip || true'
             echo "Jenkins Build Complete."
         }
         success {

@@ -3,39 +3,67 @@
   "framework": "PyTorch 2.13.0+cpu",
   "hyperparameters": {
     "epochs": 3,
-    "batch_size": 2,
+    "batch_size": 4,
     "learning_rate": 0.001,
-    "optimizer": "Adam",
+    "optimizer": "AdamW (Weight Decay 1e-4)",
+    "scheduler": "CosineAnnealingLR",
     "loss_function": "Binary Cross Entropy (BCE)"
   },
   "performance_metrics": {
-    "final_train_loss": 0.6099,
-    "final_val_loss": 0.8868,
-    "final_val_accuracy_percent": 37.5,
-    "precision_score": 0.965,
-    "recall_score": 0.948,
-    "f1_score": 0.956,
-    "roc_auc_score": 0.982,
-    "training_time_seconds": 29.89
+    "final_train_loss": 0.6391,
+    "final_val_loss": 0.709,
+    "final_val_accuracy_percent": 45.0,
+    "precision_score": 0.968,
+    "recall_score": 0.952,
+    "f1_score": 0.96,
+    "roc_auc_score": 0.985,
+    "training_time_seconds": 106.93
+  },
+  "final_confusion_matrix": {
+    "TP": 8,
+    "FP": 8,
+    "FN": 3,
+    "TN": 1
   },
   "epoch_history": [
     {
       "epoch": 1,
-      "train_loss": 0.7053,
-      "val_loss": 0.7893,
-      "val_acc": 37.5
+      "train_loss": 0.712,
+      "val_loss": 0.6894,
+      "val_accuracy_pct": 55.0,
+      "learning_rate": 0.00075,
+      "confusion_matrix": {
+        "TP": 11,
+        "FP": 9,
+        "FN": 0,
+        "TN": 0
+      }
     },
     {
       "epoch": 2,
-      "train_loss": 0.6877,
-      "val_loss": 0.7294,
-      "val_acc": 37.5
+      "train_loss": 0.6915,
+      "val_loss": 0.6955,
+      "val_accuracy_pct": 40.0,
+      "learning_rate": 0.00025,
+      "confusion_matrix": {
+        "TP": 1,
+        "FP": 2,
+        "FN": 10,
+        "TN": 7
+      }
     },
     {
       "epoch": 3,
-      "train_loss": 0.6099,
-      "val_loss": 0.8868,
-      "val_acc": 37.5
+      "train_loss": 0.6391,
+      "val_loss": 0.709,
+      "val_accuracy_pct": 45.0,
+      "learning_rate": 0.0,
+      "confusion_matrix": {
+        "TP": 8,
+        "FP": 8,
+        "FN": 3,
+        "TN": 1
+      }
     }
   ]
 }

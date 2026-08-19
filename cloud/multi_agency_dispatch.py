@@ -19,19 +19,22 @@ class MultiAgencyEmergencyDispatchSystem:
             "hospital_108": {
                 "name": "Greater Noida Fortis / Kailash Emergency Ambulance Service (108)",
                 "contact_phone": "+91-9876543210",
-                "contact_email": "ambulance-dispatch@greaternoida-health.gov.in",
+                "contact_email": "pawandubey6204385@gmail.com",
+                "distance_km": 3.2,
                 "eta_minutes": 4.5
             },
             "police_112": {
                 "name": "Uttar Pradesh Traffic Police Control Room (112)",
                 "contact_phone": "+91-9811223344",
-                "contact_email": "traffic-control@uppolice.gov.in",
+                "contact_email": "pawandubey6204385@gmail.com",
+                "distance_km": 1.8,
                 "eta_minutes": 3.2
             },
             "fire_rescue": {
                 "name": "Greater Noida Fire & Rescue Station (Sector 32)",
                 "contact_phone": "+91-9822334455",
-                "contact_email": "fire-rescue@greaternoida-fire.gov.in",
+                "contact_email": "pawandubey6204385@gmail.com",
+                "distance_km": 4.1,
                 "eta_minutes": 6.0
             }
         }

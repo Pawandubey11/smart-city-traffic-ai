@@ -12,14 +12,14 @@
 
   <style>
     :root {
-      --bg-dark: #070b14;
-      --panel-bg: rgba(15, 23, 42, 0.75);
+      --bg-dark: #060913;
+      --panel-bg: rgba(13, 18, 36, 0.75);
       --panel-border: rgba(255, 255, 255, 0.08);
       --accent-blue: #38bdf8;
       --accent-indigo: #818cf8;
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
-      --accent-red: #ef4444;
+      --accent-red: #f43f5e;
       --accent-purple: #c084fc;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
@@ -34,32 +34,41 @@
       color: var(--text-primary);
       font-family: var(--font-main);
       min-height: 100vh;
-      padding: 1.5rem;
+      padding: 1.25rem;
       background-image: 
         radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.1) 0px, transparent 50%);
+        radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 50%);
     }
 
-    .container { max-width: 1750px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+    .container { max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.25rem; }
 
     .glass-panel {
       background: var(--panel-bg);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--panel-border);
       border-radius: 16px;
       padding: 1.25rem;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.3s ease;
     }
+    .glass-panel:hover { border-color: rgba(255, 255, 255, 0.15); }
 
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.75rem; }
-    .brand-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-title { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
     .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background-color: currentColor; animation: pulse 1.8s infinite; }
     @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 0.4; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
+    /* Industrial Action Toolbar */
+    .toolbar { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-action { background: rgba(255, 255, 255, 0.06); color: #fff; border: 1px solid var(--panel-border); padding: 0.55rem 1.1rem; border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; }
+    .btn-action:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--accent-blue); transform: translateY(-1px); }
+    .btn-action-emergency { background: rgba(192, 132, 252, 0.2); color: var(--accent-purple); border-color: var(--accent-purple); }
+    .btn-action-emergency:hover { background: var(--accent-purple); color: #000; }
+
     .alert-banner {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(185, 28, 28, 0.45) 100%);
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(159, 18, 57, 0.45) 100%);
       border: 1px solid var(--accent-red);
       border-radius: 14px;
       padding: 1.1rem 1.5rem;
@@ -68,28 +77,35 @@
       align-items: center;
       animation: alertGlow 2s infinite alternate;
     }
-    @keyframes alertGlow { 0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); } 100% { box-shadow: 0 0 35px rgba(239, 68, 68, 0.7); } }
+    @keyframes alertGlow { 0% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.2); } 100% { box-shadow: 0 0 35px rgba(244, 63, 94, 0.7); } }
 
-    .btn-alert { background: #ef4444; color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
-    .btn-tab { background: rgba(255, 255, 255, 0.05); color: var(--text-secondary); border: 1px solid var(--panel-border); padding: 0.4rem 0.9rem; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease; }
-    .btn-tab.active { background: var(--accent-blue); color: #000; border-color: var(--accent-blue); }
+    .btn-alert { background: var(--accent-red); color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
 
+    /* Key Metrics Grid */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
-    .metric-card { display: flex; flex-direction: column; gap: 0.5rem; }
-    .metric-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
-    .metric-value { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; }
+    .metric-card { display: flex; flex-direction: column; gap: 0.4rem; position: relative; overflow: hidden; }
+    .metric-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
+    .metric-card-1::before { background: var(--accent-blue); }
+    .metric-card-2::before { background: var(--accent-indigo); }
+    .metric-card-3::before { background: var(--accent-yellow); }
+    .metric-card-4::before { background: var(--accent-purple); }
+    .metric-card-5::before { background: var(--accent-red); }
 
-    .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+    .metric-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); }
+    .metric-value { font-family: var(--font-heading); font-size: 2.6rem; font-weight: 800; }
+    .metric-sub { font-size: 0.78rem; color: var(--text-secondary); }
+
+    .main-grid { display: grid; grid-template-columns: 2.2fr 1fr; gap: 1.25rem; }
     @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
 
     .camera-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
     .badge { padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
     .badge-low { background: rgba(16, 185, 129, 0.18); color: var(--accent-green); }
     .badge-medium { background: rgba(245, 158, 11, 0.18); color: var(--accent-yellow); }
-    .badge-high { background: rgba(239, 68, 68, 0.18); color: var(--accent-red); }
+    .badge-high { background: rgba(244, 63, 94, 0.18); color: var(--accent-red); }
     .badge-severe { background: rgba(225, 29, 72, 0.25); color: #f43f5e; border: 1px solid #f43f5e; }
 
-    .video-viewport { width: 100%; height: 220px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
+    .video-viewport { width: 100%; height: 210px; background: #000; border-radius: 10px; position: relative; overflow: hidden; }
     .video-viewport canvas { width: 100%; height: 100%; object-fit: cover; }
     .camera-overlay { position: absolute; top: 8px; left: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; color: #38bdf8; z-index: 10; }
     .camera-hud { position: absolute; bottom: 8px; right: 8px; background: rgba(0, 0, 0, 0.75); padding: 4px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 600; color: #10b981; z-index: 10; }
@@ -102,14 +118,14 @@
     .chart-container { position: relative; height: 200px; width: 100%; }
 
     /* Industrial ALPR Violations Table */
-    .alpr-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.82rem; }
-    .alpr-table th { background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--panel-border); font-weight: 600; text-transform: uppercase; font-size: 0.72rem; }
+    .alpr-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.82rem; }
+    .alpr-table th { background: rgba(255, 255, 255, 0.04); color: var(--text-secondary); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--panel-border); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; }
     .alpr-table td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-weight: 500; }
     .alpr-plate { font-family: monospace; font-weight: 700; background: #fbbf24; color: #000; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background: #0f172a; border: 1px solid var(--accent-red); border-radius: 16px; max-width: 650px; width: 90%; padding: 1.5rem; }
+    .modal-content { background: #0d1224; border: 1px solid var(--accent-red); border-radius: 16px; max-width: 650px; width: 90%; padding: 1.5rem; }
     .modal-close { background: transparent; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
   </style>
 </head>
@@ -118,24 +134,30 @@
   <div class="container">
     <header class="navbar glass-panel">
       <div style="display: flex; align-items: center; gap: 1rem;">
-        <span style="font-size: 2rem;">🚦</span>
+        <span style="font-size: 2.2rem;">🚦</span>
         <div>
           <h1 class="brand-title">SMART CITY TRAFFIC & ACCIDENT AI CONTROL CENTER</h1>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR, Spatial Heatmaps & Emergency Preemption</span>
+          <span style="font-size: 0.78rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR, Spatial Heatmaps & Emergency Preemption</span>
         </div>
       </div>
-      <div class="status-badge">
-        <span class="pulse-dot"></span> 3 Edge AI Greengrass Nodes Active
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="toolbar">
+          <button class="btn-action btn-action-emergency" onclick="triggerEmergencyCorridor()">🚑 Green Wave Preemption</button>
+          <button class="btn-action" onclick="exportCSVLog()">📥 Export Audit CSV</button>
+        </div>
+        <div class="status-badge">
+          <span class="pulse-dot"></span> 3 Edge AI Greengrass Nodes Active
+        </div>
       </div>
     </header>
 
-    <!-- Emergency Preemption Notice -->
-    <div style="background: rgba(192, 132, 252, 0.15); border: 1px solid var(--accent-purple); padding: 0.85rem 1.25rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+    <!-- Dynamic Emergency Preemption Notice -->
+    <div id="preemptionBanner" style="background: rgba(192, 132, 252, 0.15); border: 1px solid var(--accent-purple); padding: 0.85rem 1.25rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
       <span style="font-weight: 700; color: var(--accent-purple);">🚑 EMERGENCY VEHICLE PREEMPTION ACTIVE — Priority Green Corridor Open (CAM-SOUTH-002)</span>
-      <span style="font-size: 0.8rem; background: var(--accent-purple); color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 800;">GREEN SIGNAL: 90 SEC</span>
+      <span style="font-size: 0.8rem; background: var(--accent-purple); color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 800;" id="timerBadge">GREEN SIGNAL: 90 SEC</span>
     </div>
 
-    <!-- Alert Banner -->
+    <!-- Critical Alert Banner -->
     <div class="alert-banner" id="accidentAlertBanner">
       <div>
         <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
@@ -144,29 +166,29 @@
       <button class="btn-alert" onclick="openEvidenceModal()">Inspect S3 Evidence Snapshot</button>
     </div>
 
-    <!-- Metrics Cards Grid -->
+    <!-- Executive Metrics Grid -->
     <div class="metrics-grid">
-      <div class="glass-panel metric-card">
+      <div class="glass-panel metric-card metric-card-1">
         <span class="metric-label">Monitored Junctions</span>
         <span class="metric-value" style="color: var(--accent-blue);">3</span>
         <span class="metric-sub">Active RTSP Feeds</span>
       </div>
-      <div class="glass-panel metric-card">
+      <div class="glass-panel metric-card metric-card-2">
         <span class="metric-label">Tracked Vehicles</span>
         <span class="metric-value" style="color: var(--accent-indigo);">85</span>
         <span class="metric-sub">ByteTrack Persistent Tracking</span>
       </div>
-      <div class="glass-panel metric-card">
+      <div class="glass-panel metric-card metric-card-3">
         <span class="metric-label">City Congestion Index</span>
         <span class="metric-value" style="color: var(--accent-yellow);">78.4 / 100</span>
         <span class="metric-sub">Occupancy: 52.4%</span>
       </div>
-      <div class="glass-panel metric-card">
+      <div class="glass-panel metric-card metric-card-4">
         <span class="metric-label">Overspeeding Violations</span>
         <span class="metric-value" style="color: var(--accent-purple);">2</span>
         <span class="metric-sub">ALPR OCR Extracted</span>
       </div>
-      <div class="glass-panel metric-card">
+      <div class="glass-panel metric-card metric-card-5">
         <span class="metric-label">Active Accidents</span>
         <span class="metric-value" style="color: var(--accent-red);">1</span>
         <span class="metric-sub">Amazon SNS Alert Dispatched</span>
@@ -174,7 +196,7 @@
     </div>
 
     <div class="main-grid">
-      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <!-- Live Camera Feeds Section -->
         <div class="glass-panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -183,8 +205,8 @@
               <span style="font-size: 0.78rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + ALPR OCR + PyTorch CNN-LSTM</span>
             </div>
             <div style="display: flex; gap: 0.4rem;">
-              <button class="btn-tab active" onclick="switchView('grid')">2x2 Grid View</button>
-              <button class="btn-tab" onclick="switchView('heatmap')">Spatial Heatmap View</button>
+              <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;" id="btnGrid" onclick="switchView('grid')">2x2 Grid View</button>
+              <button class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;" id="btnHeatmap" onclick="switchView('heatmap')">Spatial Heatmap View</button>
             </div>
           </div>
           
@@ -269,31 +291,31 @@
             </thead>
             <tbody>
               <tr>
-                <td>2026-08-20 02:45:12</td>
+                <td>2026-08-20 02:55:12</td>
                 <td>CAM-SOUTH-002</td>
                 <td>Car (#2)</td>
                 <td><span class="alpr-plate">TX-474-CG</span></td>
                 <td style="color: var(--accent-red); font-weight: 800;">76.2 km/h</td>
                 <td>60 km/h</td>
                 <td><span class="badge badge-high">OVERSPEEDING</span></td>
-                <td><button class="btn-tab" style="padding: 2px 8px;" onclick="openEvidenceModal()">Inspect</button></td>
+                <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
               </tr>
               <tr>
-                <td>2026-08-20 02:42:04</td>
+                <td>2026-08-20 02:52:04</td>
                 <td>CAM-NORTH-001</td>
                 <td>Motorcycle (#5)</td>
                 <td><span class="alpr-plate">CA-337-BD</span></td>
                 <td style="color: var(--accent-green); font-weight: 800;">48.5 km/h</td>
                 <td>60 km/h</td>
                 <td><span class="badge badge-low">NORMAL</span></td>
-                <td><button class="btn-tab" style="padding: 2px 8px;" onclick="openEvidenceModal()">Inspect</button></td>
+                <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div class="glass-panel">
           <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">🗺️ Smart City GIS Map View</h2>
           <div id="map"></div>
@@ -318,7 +340,7 @@
       </div>
       <div style="background: #000; border-radius: 8px; overflow: hidden; height: 300px; position: relative; margin-bottom: 1rem;">
         <canvas id="evidenceCanvas" style="width: 100%; height: 100%;"></canvas>
-        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(239,68,68,0.85); color: #fff; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.85rem;">
+        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(244,63,94,0.85); color: #fff; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.85rem;">
           ACCIDENT DETECTED (CONFIDENCE: 94.5% | TTC: 0.8s)
         </div>
       </div>
@@ -339,7 +361,7 @@
     const cams = [
       { name: "CAM-NORTH-001 (North Junction)", lat: 40.712776, lng: -74.005974, color: "#f59e0b" },
       { name: "CAM-SOUTH-002 (Ambulance Priority)", lat: 40.705000, lng: -74.011000, color: "#c084fc" },
-      { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#ef4444" }
+      { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#f43f5e" }
     ];
     cams.forEach(c => {
       L.circleMarker([c.lat, c.lng], { color: c.color, fillColor: c.color, fillOpacity: 0.8, radius: 9 }).addTo(map).bindPopup(`<b>${c.name}</b>`);
@@ -366,18 +388,33 @@
 
     function switchView(mode) {
       currentViewMode = mode;
-      document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      document.getElementById('btnGrid').style.borderColor = mode === 'grid' ? '#38bdf8' : 'rgba(255,255,255,0.08)';
+      document.getElementById('btnHeatmap').style.borderColor = mode === 'heatmap' ? '#38bdf8' : 'rgba(255,255,255,0.08)';
+    }
+
+    function triggerEmergencyCorridor() {
+      alert("🚑 EMERGENCY PREEMPTION TRIGGERED! Setting 90-second priority green wave corridor for CAM-SOUTH-002.");
+    }
+
+    function exportCSVLog() {
+      const csvContent = "data:text/csv;charset=utf-8,Timestamp,Camera_ID,Vehicle_Class,License_Plate,Speed_KMH,Limit_KMH,Status\\n2026-08-20 02:55:12,CAM-SOUTH-002,Car (#2),TX-474-CG,76.2,60,OVERSPEEDING\\n2026-08-20 02:52:04,CAM-NORTH-001,Motorcycle (#5),CA-337-BD,48.5,60,NORMAL";
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "smartcity_alpr_violations_audit.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function animateCanvas(id, carColor, hasAccident = false) {
       const cvs = document.getElementById(id);
       const ctx = cvs.getContext('2d');
-      cvs.width = 320; cvs.height = 220;
+      cvs.width = 320; cvs.height = 210;
       let x1 = 20, x2 = 140;
 
       function draw() {
-        ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, cvs.width, cvs.height);
 
         if (currentViewMode === 'heatmap') {
           // Render Spatial 8x8 Grid Heatmap Simulation
@@ -385,8 +422,8 @@
           const cellH = cvs.height / 8;
           for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
-              let alpha = ((r * 8 + c) % 5 === 0) ? 0.6 : 0.15;
-              ctx.fillStyle = `rgba(239, 68, 68, ${alpha})`;
+              let alpha = ((r * 8 + c) % 5 === 0) ? 0.65 : 0.15;
+              ctx.fillStyle = `rgba(244, 63, 94, ${alpha})`;
               ctx.fillRect(c * cellW, r * cellH, cellW - 1, cellH - 1);
             }
           }
@@ -395,26 +432,26 @@
           ctx.fillText("SPATIAL DENSITY HEATMAP (8x8)", 10, 20);
         } else {
           ctx.strokeStyle = '#334155'; ctx.setLineDash([8, 8]);
-          ctx.beginPath(); ctx.moveTo(0, 110); ctx.lineTo(320, 110); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, 105); ctx.lineTo(320, 105); ctx.stroke();
 
           x1 = (x1 + 2) % 320;
           x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
 
           // Draw Vehicle Bounding Boxes & Direction Vectors
           ctx.strokeStyle = carColor; ctx.lineWidth = 2;
-          ctx.strokeRect(x1, 55, 42, 26);
+          ctx.strokeRect(x1, 50, 42, 26);
           ctx.fillStyle = carColor; ctx.font = '10px Inter';
-          ctx.fillText("CAR #1 [TX-474-CG]", x1, 48);
+          ctx.fillText("CAR #1 [TX-474-CG]", x1, 44);
 
           // Motion Velocity Vector Line
-          ctx.beginPath(); ctx.moveTo(x1 + 42, 68); ctx.lineTo(x1 + 55, 68); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x1 + 42, 63); ctx.lineTo(x1 + 55, 63); ctx.stroke();
 
-          ctx.strokeStyle = hasAccident ? '#ef4444' : '#c084fc';
-          ctx.strokeRect(x2, 130, 48, 28);
-          ctx.fillStyle = hasAccident ? '#ef4444' : '#c084fc';
-          ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 122);
+          ctx.strokeStyle = hasAccident ? '#f43f5e' : '#c084fc';
+          ctx.strokeRect(x2, 125, 48, 28);
+          ctx.fillStyle = hasAccident ? '#f43f5e' : '#c084fc';
+          ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 118);
 
-          if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 125, 58, 38); }
+          if (hasAccident) { ctx.strokeStyle = '#f43f5e'; ctx.strokeRect(x2 - 5, 120, 58, 38); }
         }
         requestAnimationFrame(draw);
       }
@@ -423,8 +460,8 @@
 
     animateCanvas('canvas1', '#38bdf8');
     animateCanvas('canvas2', '#c084fc');
-    animateCanvas('canvas3', '#ef4444', true);
-    animateCanvas('evidenceCanvas', '#ef4444', true);
+    animateCanvas('canvas3', '#f43f5e', true);
+    animateCanvas('evidenceCanvas', '#f43f5e', true);
 
     function openEvidenceModal() { document.getElementById('evidenceModal').classList.add('active'); }
     function closeEvidenceModal() { document.getElementById('evidenceModal').classList.remove('active'); }

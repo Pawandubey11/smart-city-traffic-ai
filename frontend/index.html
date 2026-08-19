@@ -109,9 +109,10 @@
     #map { width: 100%; height: 260px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 1.25rem; }
     .chart-container { position: relative; height: 200px; width: 100%; }
 
+    /* Industrial ALPR Violations Table */
     .alpr-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.82rem; }
-    .alpr-table th { background: #1f2937; color: var(--text-secondary); text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid #374151; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
-    .alpr-table td { padding: 0.65rem 0.9rem; border-bottom: 1px solid #1f2937; font-weight: 500; }
+    .alpr-table th { background: #1f2937; color: var(--text-secondary); text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid #374151; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+    .alpr-table td { padding: 0.7rem 0.9rem; border-bottom: 1px solid #1f2937; font-weight: 500; }
     .alpr-plate { font-family: monospace; font-weight: 700; background: #f59e0b; color: #000; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
@@ -176,7 +177,7 @@
       </div>
       <div class="panel metric-card">
         <span class="metric-label">Overspeeding Violations</span>
-        <span class="metric-value" style="color: var(--accent-purple);">2</span>
+        <span class="metric-value" style="color: var(--accent-purple);">4</span>
         <span class="metric-sub">ALPR OCR Extracted</span>
       </div>
       <div class="panel metric-card">
@@ -264,10 +265,15 @@
         <!-- Real-Time ALPR Overspeeding Violations Table -->
         <div class="panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-            <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚘 Real-Time ALPR Speed Violations & Enforcement Log</h2>
-            <span style="font-size: 0.75rem; color: var(--text-secondary);">Automated Homography Speed Calibration</span>
+            <div>
+              <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚘 Real-Time ALPR Speed Violations & Enforcement Log</h2>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">Automated Homography Speed Calibration & Fine Assessment</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="text" id="alprSearch" placeholder="Search plate or camera..." style="background: #1f2937; border: 1px solid #374151; color: #fff; padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.78rem; outline: none;" onkeyup="filterALPRTable()">
+            </div>
           </div>
-          <table class="alpr-table">
+          <table class="alpr-table" id="alprTable">
             <thead>
               <tr>
                 <th>Timestamp</th>
@@ -276,6 +282,7 @@
                 <th>License Plate</th>
                 <th>Measured Speed</th>
                 <th>Speed Limit</th>
+                <th>Assessed Fine</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -288,6 +295,29 @@
                 <td><span class="alpr-plate">TX-474-CG</span></td>
                 <td style="color: var(--accent-red); font-weight: 700;">76.2 km/h</td>
                 <td>60 km/h</td>
+                <td style="color: var(--accent-yellow); font-weight: 700;">$150.00</td>
+                <td><span class="badge badge-high">OVERSPEEDING</span></td>
+                <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>2026-08-20 02:54:30</td>
+                <td>CAM-EAST-003</td>
+                <td>Truck (#14)</td>
+                <td><span class="alpr-plate">NY-891-KL</span></td>
+                <td style="color: var(--accent-red); font-weight: 700;">88.4 km/h</td>
+                <td>60 km/h</td>
+                <td style="color: var(--accent-yellow); font-weight: 700;">$250.00</td>
+                <td><span class="badge badge-high">OVERSPEEDING</span></td>
+                <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>2026-08-20 02:53:15</td>
+                <td>CAM-SOUTH-002</td>
+                <td>SUV (#8)</td>
+                <td><span class="alpr-plate">FL-512-WX</span></td>
+                <td style="color: var(--accent-red); font-weight: 700;">81.0 km/h</td>
+                <td>60 km/h</td>
+                <td style="color: var(--accent-yellow); font-weight: 700;">$180.00</td>
                 <td><span class="badge badge-high">OVERSPEEDING</span></td>
                 <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
               </tr>
@@ -298,6 +328,7 @@
                 <td><span class="alpr-plate">CA-337-BD</span></td>
                 <td style="color: var(--accent-green); font-weight: 700;">48.5 km/h</td>
                 <td>60 km/h</td>
+                <td style="color: var(--text-muted);">$0.00</td>
                 <td><span class="badge badge-low">NORMAL</span></td>
                 <td><button class="btn-action" style="padding: 2px 8px; font-size: 0.72rem;" onclick="openEvidenceModal()">Inspect</button></td>
               </tr>
@@ -388,7 +419,7 @@
     }
 
     function exportCSVLog() {
-      const csvContent = "data:text/csv;charset=utf-8,Timestamp,Camera_ID,Vehicle_Class,License_Plate,Speed_KMH,Limit_KMH,Status\\n2026-08-20 02:55:12,CAM-SOUTH-002,Car (#2),TX-474-CG,76.2,60,OVERSPEEDING\\n2026-08-20 02:52:04,CAM-NORTH-001,Motorcycle (#5),CA-337-BD,48.5,60,NORMAL";
+      const csvContent = "data:text/csv;charset=utf-8,Timestamp,Camera_ID,Vehicle_Class,License_Plate,Speed_KMH,Limit_KMH,Fine_USD,Status\\n2026-08-20 02:55:12,CAM-SOUTH-002,Car (#2),TX-474-CG,76.2,60,150.00,OVERSPEEDING\\n2026-08-20 02:54:30,CAM-EAST-003,Truck (#14),NY-891-KL,88.4,60,250.00,OVERSPEEDING\\n2026-08-20 02:53:15,CAM-SOUTH-002,SUV (#8),FL-512-WX,81.0,60,180.00,OVERSPEEDING\\n2026-08-20 02:52:04,CAM-NORTH-001,Motorcycle (#5),CA-337-BD,48.5,60,0.00,NORMAL";
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
@@ -396,6 +427,21 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    function filterALPRTable() {
+      const input = document.getElementById("alprSearch");
+      const filter = input.value.toUpperCase();
+      const table = document.getElementById("alprTable");
+      const tr = table.getElementsByTagName("tr");
+      for (let i = 1; i < tr.length; i++) {
+        let textContent = tr[i].textContent || tr[i].innerText;
+        if (textContent.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
     }
 
     function animateCanvas(id, carColor, hasAccident = false) {

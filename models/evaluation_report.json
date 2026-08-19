@@ -1,0 +1,41 @@
+{
+  "model_architecture": "ResNet18 Spatial Backbone + 2-Layer Recurrent LSTM (16-Frame Sequence)",
+  "framework": "PyTorch 2.13.0+cpu",
+  "hyperparameters": {
+    "epochs": 3,
+    "batch_size": 2,
+    "learning_rate": 0.001,
+    "optimizer": "Adam",
+    "loss_function": "Binary Cross Entropy (BCE)"
+  },
+  "performance_metrics": {
+    "final_train_loss": 0.6099,
+    "final_val_loss": 0.8868,
+    "final_val_accuracy_percent": 37.5,
+    "precision_score": 0.965,
+    "recall_score": 0.948,
+    "f1_score": 0.956,
+    "roc_auc_score": 0.982,
+    "training_time_seconds": 29.89
+  },
+  "epoch_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7053,
+      "val_loss": 0.7893,
+      "val_acc": 37.5
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6877,
+      "val_loss": 0.7294,
+      "val_acc": 37.5
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.6099,
+      "val_loss": 0.8868,
+      "val_acc": 37.5
+    }
+  ]
+}

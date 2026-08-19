@@ -63,6 +63,7 @@ pipeline {
                     python3 tests/test_phase7_local_prototype.py
                     python3 tests/test_phase20_alpr_speed.py
                     python3 tests/test_phase21_emergency_priority.py
+                    python3 tests/test_phase22_spatial_heatmap.py
                 '''
             }
         }

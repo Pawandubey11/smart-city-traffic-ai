@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart City Traffic & Accident AI Control Center</title>
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -23,6 +20,7 @@
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
       --accent-red: #ef4444;
+      --accent-purple: #c084fc;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --font-main: 'Inter', system-ui, sans-serif;
@@ -42,7 +40,7 @@
         radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.1) 0px, transparent 50%);
     }
 
-    .container { max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+    .container { max-width: 1750px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
 
     .glass-panel {
       background: var(--panel-bg);
@@ -54,7 +52,7 @@
     }
 
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.75rem; }
-    .brand-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     .status-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; background: rgba(16, 185, 129, 0.12); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
     .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background-color: currentColor; animation: pulse 1.8s infinite; }
@@ -74,7 +72,7 @@
 
     .btn-alert { background: #ef4444; color: #fff; border: none; padding: 0.65rem 1.3rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
 
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
     .metric-card { display: flex; flex-direction: column; gap: 0.5rem; }
     .metric-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
     .metric-value { font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; }
@@ -100,7 +98,6 @@
     #map { width: 100%; height: 260px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1.25rem; }
     .chart-container { position: relative; height: 200px; width: 100%; }
 
-    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-content { background: #0f172a; border: 1px solid var(--accent-red); border-radius: 16px; max-width: 650px; width: 90%; padding: 1.5rem; }
@@ -115,7 +112,7 @@
         <span style="font-size: 2rem;">🚦</span>
         <div>
           <h1 class="brand-title">SMART CITY TRAFFIC & ACCIDENT AI CONTROL CENTER</h1>
-          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | Adaptive Signal Timing Advisor</span>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">AWS IoT Greengrass Edge Engine v1.0.0 | ALPR & Emergency Corridor Preemption</span>
         </div>
       </div>
       <div class="status-badge">
@@ -123,6 +120,13 @@
       </div>
     </header>
 
+    <!-- Emergency Preemption Notice -->
+    <div style="background: rgba(192, 132, 252, 0.15); border: 1px solid var(--accent-purple); padding: 0.85rem 1.25rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-weight: 700; color: var(--accent-purple);">🚑 EMERGENCY VEHICLE PREEMPTION ACTIVE — Priority Green Corridor Open (CAM-SOUTH-002)</span>
+      <span style="font-size: 0.8rem; background: var(--accent-purple); color: #000; padding: 4px 10px; border-radius: 6px; font-weight: 800;">GREEN SIGNAL: 90 SEC</span>
+    </div>
+
+    <!-- Alert Banner -->
     <div class="alert-banner" id="accidentAlertBanner">
       <div>
         <h3 style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
@@ -131,11 +135,12 @@
       <button class="btn-alert" onclick="openEvidenceModal()">Inspect S3 Evidence Snapshot</button>
     </div>
 
+    <!-- Metrics Cards Grid -->
     <div class="metrics-grid">
       <div class="glass-panel metric-card">
         <span class="metric-label">Monitored Junctions</span>
         <span class="metric-value" style="color: var(--accent-blue);">3</span>
-        <span class="metric-sub">Active RTSP Camera Feeds</span>
+        <span class="metric-sub">Active RTSP Feeds</span>
       </div>
       <div class="glass-panel metric-card">
         <span class="metric-label">Tracked Vehicles</span>
@@ -145,7 +150,12 @@
       <div class="glass-panel metric-card">
         <span class="metric-label">City Congestion Index</span>
         <span class="metric-value" style="color: var(--accent-yellow);">78.4 / 100</span>
-        <span class="metric-sub">Occupancy: 52.4% | Stopped: 38%</span>
+        <span class="metric-sub">Occupancy: 52.4%</span>
+      </div>
+      <div class="glass-panel metric-card">
+        <span class="metric-label">Overspeeding Violations</span>
+        <span class="metric-value" style="color: var(--accent-purple);">2</span>
+        <span class="metric-sub">ALPR OCR Extracted</span>
       </div>
       <div class="glass-panel metric-card">
         <span class="metric-label">Active Accidents</span>
@@ -157,8 +167,8 @@
     <div class="main-grid">
       <div class="glass-panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & Adaptive Signal Control</h2>
-          <span style="font-size: 0.8rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + PyTorch CNN-LSTM</span>
+          <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;">🎥 Live Edge Feeds & ALPR Speed Tracker</h2>
+          <span style="font-size: 0.8rem; color: var(--accent-blue);">YOLOv8 + ByteTrack + ALPR + PyTorch CNN-LSTM</span>
         </div>
         
         <div class="camera-grid">
@@ -174,9 +184,9 @@
             </div>
             <div class="camera-stats" style="margin-top: 0.75rem;">
               <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">28</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val">8.5 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Max Speed:</span><span class="stat-val">48.2 km/h</span></div>
               <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">4.2s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-blue);">45 sec</span></div>
             </div>
           </div>
 
@@ -184,17 +194,17 @@
           <div class="glass-panel">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
               <span style="font-weight: 700; font-size: 0.95rem;">South Expressway Exit 12</span>
-              <span class="badge badge-low">LOW (18.5)</span>
+              <span class="badge badge-low" style="background: rgba(192,132,252,0.2); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
             </div>
             <div class="video-viewport">
-              <div class="camera-overlay">CAM-SOUTH-002 • 30 FPS</div>
+              <div class="camera-overlay" style="color: var(--accent-purple);">CAM-SOUTH-002 • PREEMPTION</div>
               <canvas id="canvas2"></canvas>
             </div>
             <div class="camera-stats" style="margin-top: 0.75rem;">
               <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">12</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val">32.0 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Violations:</span><span class="stat-val" style="color: var(--accent-purple);">1 (TX-474-CG)</span></div>
               <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-green);">12.8s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-blue);">20 sec</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-purple);">90s OVERRIDE</span></div>
             </div>
           </div>
 
@@ -210,9 +220,9 @@
             </div>
             <div class="camera-stats" style="margin-top: 0.75rem;">
               <div class="stat-item"><span class="stat-label">Vehicles:</span><span class="stat-val">45</span></div>
-              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 px/f</span></div>
+              <div class="stat-item"><span class="stat-label">Avg Speed:</span><span class="stat-val" style="color: var(--accent-red);">1.2 km/h</span></div>
               <div class="stat-item"><span class="stat-label">Min TTC:</span><span class="stat-val" style="color: var(--accent-red);">0.8s</span></div>
-              <div class="stat-item"><span class="stat-label">Rec. Green Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
+              <div class="stat-item"><span class="stat-label">Rec. Signal:</span><span class="stat-val" style="color: var(--accent-red);">60 sec</span></div>
             </div>
           </div>
         </div>
@@ -262,7 +272,7 @@
 
     const cams = [
       { name: "CAM-NORTH-001 (North Junction)", lat: 40.712776, lng: -74.005974, color: "#f59e0b" },
-      { name: "CAM-SOUTH-002 (South Expressway)", lat: 40.705000, lng: -74.011000, color: "#10b981" },
+      { name: "CAM-SOUTH-002 (Ambulance Priority)", lat: 40.705000, lng: -74.011000, color: "#c084fc" },
       { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#ef4444" }
     ];
     cams.forEach(c => {
@@ -301,8 +311,8 @@
         x2 = (x2 + (hasAccident ? 0.2 : 2.5)) % 320;
 
         ctx.strokeStyle = carColor; ctx.lineWidth = 2;
-        ctx.strokeRect(x1, 50, 40, 24); ctx.fillStyle = carColor; ctx.fillText("CAR 0.94", x1, 44);
-        ctx.strokeRect(x2, 120, 45, 26); ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "CAR 0.91", x2, 114);
+        ctx.strokeRect(x1, 50, 40, 24); ctx.fillStyle = carColor; ctx.fillText("CAR [TX-474-CG]", x1, 44);
+        ctx.strokeRect(x2, 120, 45, 26); ctx.fillText(hasAccident ? "ACCIDENT 0.95" : "AMBULANCE 0.98", x2, 114);
 
         if (hasAccident) { ctx.strokeStyle = '#ef4444'; ctx.strokeRect(x2 - 5, 115, 55, 36); }
         requestAnimationFrame(draw);
@@ -311,7 +321,7 @@
     }
 
     animateCanvas('canvas1', '#38bdf8');
-    animateCanvas('canvas2', '#10b981');
+    animateCanvas('canvas2', '#c084fc');
     animateCanvas('canvas3', '#ef4444', true);
     animateCanvas('evidenceCanvas', '#ef4444', true);
 

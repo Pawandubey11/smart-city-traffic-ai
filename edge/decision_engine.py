@@ -10,15 +10,21 @@ from edge.detector import VehicleDetector
 from edge.tracker import ByteTracker
 from edge.traffic_analyzer import TrafficAnalyzer
 from edge.accident_detector import AccidentDetector
+from edge.alpr_speed_detector import ALPRSpeedDetector
+from edge.emergency_priority import EmergencyVehiclePrioritySystem
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("DecisionEngine")
 
 class LocalDecisionEngine:
     """
-    Advanced Edge Decision & Real-Time Event Engine.
-    Integrates YOLOv8 detection, ByteTrack tracking, Congestion Index scoring,
-    Adaptive Traffic Signal Timing, PyTorch CNN-LSTM accident probability, and Time-To-Collision (TTC) physics.
+    State-of-the-Art Edge Decision & Smart City Event Engine.
+    Combines:
+    - YOLOv8 Object Detection & ByteTrack Multi-Object Tracking
+    - Quantitative Congestion Index Scoring & Adaptive Traffic Signal Timing
+    - Real-World km/h Speed Estimation & Automatic License Plate Recognition (ALPR)
+    - Emergency Vehicle Corridor Preemption & Priority Override Signal Control
+    - PyTorch CNN-LSTM 16-Frame Spatial-Temporal Model & Time-To-Collision (TTC) Physics
     """
     def __init__(
         self,
@@ -36,23 +42,34 @@ class LocalDecisionEngine:
         self.tracker = ByteTracker()
         self.analyzer = TrafficAnalyzer()
         self.accident_engine = AccidentDetector(probability_threshold=accident_threshold)
+        self.alpr_speed_engine = ALPRSpeedDetector(speed_limit_kmh=60.0)
+        self.emergency_system = EmergencyVehiclePrioritySystem()
         
         self.last_telemetry_time = 0.0
         os.makedirs(self.evidence_dir, exist_ok=True)
 
     def process_frame(self, frame_idx: int, timestamp_ms: float, raw_frame: np.ndarray, prep_frame: np.ndarray) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         """
-        Processes a single video frame through the AI vision pipeline.
+        Processes a single video frame through the unified AI vision pipeline.
         Returns: (telemetry_event, accident_event)
         """
         # 1. Detection & Multi-Object Tracking
         detections = self.detector.detect(prep_frame)
         tracks = self.tracker.update(detections)
         
-        # 2. Traffic Flow & Adaptive Signal Timing Analysis
-        traffic_metrics = self.analyzer.analyze(tracks)
+        # 2. ALPR License Plate & Real-World km/h Speed Violations
+        speed_violations = self.alpr_speed_engine.process_violations(tracks)
         
-        # 3. Spatial-Temporal & Physics TTC Accident Detection
+        # 3. Emergency Vehicle Priority Corridor Evaluation
+        emergency_status = self.emergency_system.evaluate_emergency_priority(tracks)
+        
+        # 4. Traffic Flow & Adaptive Signal Timing Analysis
+        traffic_metrics = self.analyzer.analyze(tracks)
+        if emergency_status["signal_override_active"]:
+            traffic_metrics["recommended_green_signal_sec"] = emergency_status["preemption_green_duration_sec"]
+            traffic_metrics["emergency_preemption_active"] = True
+            
+        # 5. Spatial-Temporal & Physics TTC Accident Detection
         self.accident_engine.add_frame(prep_frame)
         accident_prob, is_accident, min_ttc_sec = self.accident_engine.predict_accident_probability(tracks)
         
@@ -61,7 +78,7 @@ class LocalDecisionEngine:
         
         current_time = time.time()
         
-        # 4. Periodic Routine Telemetry Payload Emission
+        # 6. Periodic Routine Telemetry Payload Emission
         if (current_time - self.last_telemetry_time) >= self.telemetry_interval_sec:
             self.last_telemetry_time = current_time
             telemetry_event = {
@@ -70,10 +87,12 @@ class LocalDecisionEngine:
                 "timestamp_ms": int(timestamp_ms),
                 "metrics": traffic_metrics,
                 "accident_probability": accident_prob,
-                "min_time_to_collision_sec": min_ttc_sec
+                "min_time_to_collision_sec": min_ttc_sec,
+                "speed_violations": speed_violations,
+                "emergency_corridor_active": emergency_status["signal_override_active"]
             }
 
-        # 5. High-Priority Emergency Accident Event Emission
+        # 7. High-Priority Emergency Accident Event Emission
         if is_accident:
             snapshot_filename = f"accident_{self.camera_id}_{int(timestamp_ms)}.jpg"
             snapshot_path = os.path.join(self.evidence_dir, snapshot_filename)

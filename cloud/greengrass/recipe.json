@@ -1,0 +1,30 @@
+{
+  "RecipeFormatVersion": "2020-01-25",
+  "ComponentName": "com.smartcity.traffic.ai",
+  "ComponentVersion": "1.0.0",
+  "ComponentDescription": "Real-Time Traffic Congestion & Spatial-Temporal Accident Detection Edge Component",
+  "ComponentPublisher": "Smart City AI Systems",
+  "ComponentConfiguration": {
+    "DefaultConfiguration": {
+      "camera_id": "CAM-NORTH-001",
+      "video_source": "data/sample_traffic.mp4",
+      "telemetry_interval_sec": 5.0,
+      "accident_threshold": 0.80
+    }
+  },
+  "Manifests": [
+    {
+      "Platform": {
+        "os": "all"
+      },
+      "Lifecycle": {
+        "Install": {
+          "Script": "pip3 install -r {artifacts:decompressedPath}/smart-city-traffic-ai/requirements.txt"
+        },
+        "Run": {
+          "Script": "python3 {artifacts:decompressedPath}/smart-city-traffic-ai/edge/main.py --source {configuration:/video_source} --camera-id {configuration:/camera_id}"
+        }
+      }
+    }
+  ]
+}

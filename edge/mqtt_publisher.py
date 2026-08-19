@@ -64,5 +64,9 @@ class IoTCoreMQTTPublisher:
         """Helper alias method for telemetry publishing."""
         return self.publish(payload)
 
+    def publish_accident_alert(self, camera_id: str, payload: Dict[str, Any]) -> bool:
+        """Helper alias method for accident alert dispatches."""
+        return self.publish(payload)
+
 # Backward compatibility class alias
 SmartCityMQTTClient = IoTCoreMQTTPublisher

@@ -115,6 +115,8 @@ def train_and_evaluate(epochs: int = 3, batch_size: int = 2, lr: float = 0.001):
         json.dump(eval_report, f, indent=2)
     logger.info(f"Generated official evaluation report for professor to: {report_path}")
 
+train = train_and_evaluate
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=3)

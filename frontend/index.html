@@ -152,7 +152,7 @@
     <!-- Critical Alert Banner -->
     <div class="alert-banner" id="accidentAlertBanner">
       <div>
-        <h3 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — East Bridge Toll Plaza [CAM-EAST-003]</h3>
+        <h3 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: #fff;">🚨 CRITICAL ACCIDENT DETECTED — Noida-Greater Noida Expressway Toll [CAM-EAST-003]</h3>
         <p style="color: #fca5a5; font-size: 0.85rem; margin-top: 2px;">AI Confidence: 94.5% | Time-To-Collision (TTC): 0.8s | Severity: CRITICAL</p>
       </div>
       <button class="btn-alert" onclick="openEvidenceModal()">Inspect Evidence Snapshot</button>
@@ -206,7 +206,7 @@
             <!-- Camera 1 -->
             <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 600; font-size: 0.9rem;">North Junction & 5th Ave</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">Pari Chowk Junction (Greater Noida)</span>
                 <span class="badge badge-high">HIGH (72.0)</span>
               </div>
               <div class="video-viewport">
@@ -225,7 +225,7 @@
             <!-- Camera 2 -->
             <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 600; font-size: 0.9rem;">South Expressway Exit 12</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">Knowledge Park II Exit</span>
                 <span class="badge badge-low" style="background: rgba(168,85,247,0.15); color: var(--accent-purple);">AMBULANCE PRIORITY</span>
               </div>
               <div class="video-viewport">
@@ -244,7 +244,7 @@
             <!-- Camera 3 -->
             <div class="panel" style="padding: 0.85rem;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 600; font-size: 0.9rem;">East Bridge Toll Plaza</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">Noida-Greater Noida Expressway Toll</span>
                 <span class="badge badge-severe">SEVERE (91.2)</span>
               </div>
               <div class="video-viewport">
@@ -377,13 +377,13 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
-    const map = L.map('map').setView([40.7128, -74.0060], 12);
+    const map = L.map('map').setView([28.4744, 77.5040], 13);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
 
     const cams = [
-      { name: "CAM-NORTH-001 (North Junction)", lat: 40.712776, lng: -74.005974, color: "#f59e0b" },
-      { name: "CAM-SOUTH-002 (Ambulance Priority)", lat: 40.705000, lng: -74.011000, color: "#a855f7" },
-      { name: "CAM-EAST-003 (East Toll Plaza - ACCIDENT)", lat: 40.720000, lng: -73.995000, color: "#ef4444" }
+      { name: "CAM-NORTH-001 (Pari Chowk Junction, Greater Noida)", lat: 28.4670, lng: 77.5140, color: "#f59e0b" },
+      { name: "CAM-SOUTH-002 (Knowledge Park II - Ambulance Priority)", lat: 28.4600, lng: 77.4900, color: "#a855f7" },
+      { name: "CAM-EAST-003 (Noida-Greater Noida Expressway - ACCIDENT)", lat: 28.4850, lng: 77.4750, color: "#ef4444" }
     ];
     cams.forEach(c => {
       L.circleMarker([c.lat, c.lng], { color: c.color, fillColor: c.color, fillOpacity: 0.8, radius: 8 }).addTo(map).bindPopup(`<b>${c.name}</b>`);

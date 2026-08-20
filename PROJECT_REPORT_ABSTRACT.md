@@ -7,12 +7,11 @@
 ## **Design and Implementation of an AI-Powered Smart City Traffic Monitoring, Accident Detection, and Emergency Response Framework for Urban Transportation**
 
 **Project Number:** 238  
-**Guided By:** Dr. Ajeet Kumar Sharma  
+**Guided By:** Anand Mishra  
 **Academic Year:** 2025 – 2026  
 
 **Submitted By:**  
 - **Pawan Dubey** (2341492)  
-- **Rohit Raj** (2341565)  
 
 ---
 

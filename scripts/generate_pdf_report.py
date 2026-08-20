@@ -28,20 +28,20 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_page_number(self, page_count):
         if self._pageNumber == 1:
-            return  # Suppress headers/footers on title page
+            return  # Suppress headers/footers on cover page
             
         self.saveState()
         self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#4b5563"))
+        self.setFillColor(colors.HexColor("#374151"))
         
-        # Header
+        # Running Header
         self.drawString(54, 750, "AI-Powered Smart City Traffic AI & Emergency Response Framework")
         self.drawRightString(558, 750, "IILM University")
-        self.setStrokeColor(colors.HexColor("#d1d5db"))
+        self.setStrokeColor(colors.HexColor("#cbd5e1"))
         self.setLineWidth(0.5)
         self.line(54, 742, 558, 742)
         
-        # Footer
+        # Running Footer
         self.drawCentredString(306, 36, f"Page {self._pageNumber} of {page_count}")
         self.restoreState()
 
@@ -57,25 +57,28 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
 
     styles = getSampleStyleSheet()
 
-    # Custom Typography Styles
-    style_cover_univ = ParagraphStyle('CoverUniv', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=20, leading=24, alignment=TA_CENTER, textColor=colors.HexColor("#111827"))
+    # Professional Typography Styles
+    style_cover_univ = ParagraphStyle('CoverUniv', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=20, leading=24, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     style_cover_dept = ParagraphStyle('CoverDept', parent=styles['Normal'], fontName='Helvetica-Oblique', fontSize=11, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#374151"))
     style_cover_subtitle = ParagraphStyle('CoverSubtitle', parent=styles['Normal'], fontName='Helvetica-Oblique', fontSize=11, leading=15, alignment=TA_CENTER, textColor=colors.HexColor("#4b5563"))
-    style_cover_title = ParagraphStyle('CoverTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=16, leading=22, alignment=TA_CENTER, textColor=colors.HexColor("#111827"))
+    style_cover_title = ParagraphStyle('CoverTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=16, leading=22, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
     
-    style_cover_meta_label = ParagraphStyle('CoverMetaLabel', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=14, alignment=TA_LEFT, textColor=colors.HexColor("#111827"))
-    style_cover_meta_val = ParagraphStyle('CoverMetaVal', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=14, alignment=TA_LEFT, textColor=colors.HexColor("#374151"))
+    style_cover_meta_label = ParagraphStyle('CoverMetaLabel', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=14, alignment=TA_LEFT, textColor=colors.HexColor("#000000"))
+    style_cover_meta_val = ParagraphStyle('CoverMetaVal', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=14, alignment=TA_LEFT, textColor=colors.HexColor("#1f2937"))
     
-    style_heading1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName='Helvetica-Bold', fontSize=15, leading=19, textColor=colors.HexColor("#111827"), spaceBefore=14, spaceAfter=8)
-    style_heading2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName='Helvetica-Bold', fontSize=12, leading=16, textColor=colors.HexColor("#1f2937"), spaceBefore=10, spaceAfter=6)
+    style_heading1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName='Helvetica-Bold', fontSize=14, leading=18, textColor=colors.HexColor("#000000"), spaceBefore=14, spaceAfter=8)
+    style_heading2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName='Helvetica-Bold', fontSize=11, leading=15, textColor=colors.HexColor("#111827"), spaceBefore=10, spaceAfter=6)
     
     style_body = ParagraphStyle('BodyText', parent=styles['Normal'], fontName='Helvetica', fontSize=9.5, leading=13.5, alignment=TA_JUSTIFY, textColor=colors.HexColor("#1f2937"), spaceAfter=8)
     style_bullet = ParagraphStyle('BulletText', parent=styles['Normal'], fontName='Helvetica', fontSize=9.5, leading=13.5, textColor=colors.HexColor("#1f2937"), leftIndent=15, spaceAfter=4)
-    style_code = ParagraphStyle('CodeBlock', parent=styles['Normal'], fontName='Courier', fontSize=7.5, leading=10, textColor=colors.HexColor("#111827"), spaceAfter=8)
+    style_code = ParagraphStyle('CodeBlock', parent=styles['Normal'], fontName='Courier', fontSize=7.5, leading=10, textColor=colors.HexColor("#000000"), spaceAfter=8)
+
+    style_th = ParagraphStyle('TH', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, leading=12, textColor=colors.white)
+    style_td = ParagraphStyle('TD', parent=styles['Normal'], fontName='Helvetica', fontSize=9, leading=12, textColor=colors.HexColor("#111827"))
 
     story = []
 
-    # ==================== PAGE 1: TITLE COVER PAGE ====================
+    # ==================== PAGE 1: COVER PAGE ====================
     logo_path = "iilm_logo.jpeg"
     if os.path.exists(logo_path):
         story.append(Spacer(1, 10))
@@ -86,17 +89,17 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     story.append(Spacer(1, 4))
     story.append(Paragraph("Department of Computer Science & Engineering", style_cover_dept))
     story.append(Spacer(1, 12))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#111827"), spaceBefore=0, spaceAfter=20))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#000000"), spaceBefore=0, spaceAfter=20))
     
     story.append(Spacer(1, 15))
     story.append(Paragraph("B.Tech (CSE) — Final Year Project Report", style_cover_subtitle))
     story.append(Spacer(1, 20))
     story.append(Paragraph("Design and Implementation of an AI-Powered Smart City Traffic Monitoring, Accident Detection, and Emergency Response Framework for Urban Transportation", style_cover_title))
-    story.append(Spacer(1, 55))
+    story.append(Spacer(1, 60))
 
     meta_table_data = [
         [Paragraph("Project Number", style_cover_meta_label), Paragraph("238", style_cover_meta_val)],
-        [Paragraph("Guided By", style_cover_meta_label), Paragraph("Dr. Ajeet Kumar Sharma", style_cover_meta_val)],
+        [Paragraph("Guided By", style_cover_meta_label), Paragraph("Anand Mishra", style_cover_meta_val)],
         [Paragraph("Academic Year", style_cover_meta_label), Paragraph("2025 – 2026", style_cover_meta_val)],
     ]
     meta_table = Table(meta_table_data, colWidths=[120, 250])
@@ -106,15 +109,15 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     ]))
     story.append(meta_table)
     
-    story.append(Spacer(1, 60))
-    story.append(Paragraph("Submitted By", ParagraphStyle('SubBy', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=12, leading=16, alignment=TA_CENTER, textColor=colors.HexColor("#111827"))))
+    story.append(Spacer(1, 70))
+    story.append(Paragraph("Submitted By", ParagraphStyle('SubBy', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=12, leading=16, alignment=TA_CENTER, textColor=colors.HexColor("#000000"))))
     story.append(Spacer(1, 8))
     
     sub_table_data = [
-        [Paragraph("Pawan Dubey", style_cover_meta_val), Paragraph("2341492", style_cover_meta_val)],
-        [Paragraph("Rohit Raj", style_cover_meta_val), Paragraph("2341565", style_cover_meta_val)],
+        [Paragraph("Pawan Dubey", ParagraphStyle('SubVal', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#111827"))), 
+         Paragraph("2341492", ParagraphStyle('SubVal2', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=14, alignment=TA_CENTER, textColor=colors.HexColor("#111827")))],
     ]
-    sub_table = Table(sub_table_data, colWidths=[120, 80])
+    sub_table = Table(sub_table_data, colWidths=[140, 90])
     sub_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -158,7 +161,7 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     toc_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('LINEBELOW', (0, 0), (-1, -1), 0.25, colors.HexColor("#f3f4f6")),
+        ('LINEBELOW', (0, 0), (-1, -1), 0.25, colors.HexColor("#e5e7eb")),
     ]))
     story.append(toc_table)
     
@@ -167,23 +170,23 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     # ==================== ABSTRACT & MAIN CONTENT ====================
     story.append(Paragraph("Abstract", style_heading1))
     story.append(Paragraph(
-        "The rapid growth of metropolitan vehicle densities has significantly increased traffic congestion, road accidents, and delayed emergency response times. Traditional urban traffic management systems rely primarily on manual CCTV camera monitoring and fixed-timer traffic signals, which are inefficient, slow to react to real-time accidents, and unable to prioritize emergency vehicles such as ambulances and fire engines. An intelligent, automated framework is therefore needed to continuously monitor urban traffic streams, detect traffic anomalies and collisions, track vehicle speeds, and initiate automated emergency response protocols.",
+        "The rapid growth of urban vehicular traffic across modern smart cities has significantly increased traffic congestion, high-speed collisions, and delays in emergency medical dispatching. Traditional urban traffic management infrastructure relies heavily on manual CCTV camera monitoring and static timer traffic lights, which fail to adapt to live traffic shifts, miss high-speed accidents, and cannot open priority lanes for emergency vehicles. An intelligent, automated, and cloud-integrated computer vision framework is essential to continuously monitor traffic feeds, track vehicle velocities, detect collisions, and dispatch multi-agency emergency responses.",
         style_body
     ))
     story.append(Paragraph(
-        "This project proposes an end-to-end, AI-powered Smart City Traffic Monitoring, Accident Detection, and Emergency Response Framework designed for real-time edge processing and cloud telemetry. An edge ingestion layer captures live video feeds from multi-junction RTSP camera streams. A computer vision pipeline utilizing YOLOv8 extracts vehicle spatial bounding boxes across multiple classes (cars, buses, trucks, motorcycles, autorickshaws), while ByteTrack maintains persistent vehicle identities across frames. Automated Homography transformation matrix calculations compute real-time vehicle velocities (km/h) and identify Automatic License Plate Recognition (ALPR) High Security Registration Plates (HSRP) for overspeeding e-Challan fine enforcement.",
+        "This project proposes a comprehensive AI-Powered Smart City Traffic Monitoring, Accident Detection, and Emergency Response Framework designed for real-time edge processing and cloud telemetry. Live video streams from multi-junction camera nodes (e.g., Greater Noida Pari Chowk and Expressway Toll) are ingested at the edge using AWS IoT Greengrass. A computer vision pipeline utilizing YOLOv8 extracts spatial bounding boxes across multiple vehicle classes (Cars, Buses, Trucks, Motorcycles, Autorickshaws), while ByteTrack maintains persistent vehicle identities across frames. Automated Homography transformation matrix calculations compute real-time vehicle velocities (km/h) and extract Indian High Security Registration Plates (HSRP) for automated ALPR overspeeding e-Challan fine enforcement.",
         style_body
     ))
     story.append(Paragraph(
-        "To detect collisions, a two-stage Spatial-Temporal Deep Learning Architecture—combining a 2D ResNet18 Convolutional Backbone for spatial feature extraction with a 2-Layer Recurrent Long Short-Term Memory (LSTM) network—analyzes 16-frame temporal sequence tensors to detect vehicle collisions with a 94.5% confidence score and Time-To-Collision (TTC) metric. Simultaneously, a dynamic Congestion Index (CI in [0, 100]) is computed across an 8x8 spatial density grid to adjust adaptive traffic signal timings.",
+        "To detect vehicle collisions, a two-stage Spatial-Temporal Deep Learning Architecture—combining a 2D ResNet18 Convolutional Backbone for spatial feature extraction with a 2-Layer Recurrent Long Short-Term Memory (LSTM) network—analyzes 16-frame temporal sequence tensors to compute collision probability (P >= 0.5) and Time-To-Collision (TTC). Simultaneously, a dynamic Congestion Index (CI in [0, 100]) is computed across an 8x8 spatial density grid to optimize adaptive traffic light timings.",
         style_body
     ))
     story.append(Paragraph(
-        "Upon accident detection or emergency vehicle identification, an automated Multi-Agency Emergency Response Engine dispatches real-time SMS, Email, and REST Webhook alerts containing exact GPS coordinates, vehicle details, and direct Google Maps navigation links to Hospitals (108 Ambulance Dispatch, Fortis/Kailash), Uttar Pradesh Traffic Police Control Rooms (112), and Fire Stations (Sector 32). Concurrently, an emergency Green Wave Preemption protocol overrides junction signals for 90 seconds, and Variable Message Signs (VMS) broadcast dynamic detour routing advisories. The framework is deployed using Docker, Jenkins CI/CD, AWS IoT Core, Greengrass, S3, SageMaker, DynamoDB, CloudWatch, and a glassmorphic Web Control Room UI, delivering an end-to-end industrial solution for urban traffic safety.",
+        "Upon accident detection, an automated Multi-Agency Emergency Response Engine dispatches instant SMS, Email, and Webhook alerts containing exact GPS coordinates (28.4850 N, 77.4750 E), vehicle details (UP16-CV-9842), distance metrics (3.2 km to Fortis Hospital, 1.8 km to UP Police 112), and direct Google Maps navigation links to pawandubey6204385@gmail.com, Fortis/Kailash Hospital (108 Ambulance), and UP Traffic Police (112). Concurrently, a 90-second Green Wave Preemption protocol overrides junction traffic lights to clear priority emergency corridors, and Variable Message Signs (VMS) broadcast dynamic detour advisories. The system is containerized with Docker, automated via Jenkins CI/CD across 26 system test suites, and managed via AWS cloud services and a glassmorphic Web Control Room UI.",
         style_body
     ))
     story.append(Paragraph(
-        "<b>Keywords:</b> Smart City Traffic AI, Computer Vision, YOLOv8, ByteTrack, ALPR, PyTorch CNN-LSTM, Accident Detection, Emergency Preemption, AWS IoT Core, Greengrass, SageMaker, Jenkins, Docker, Traffic Control Room.",
+        "<b>Keywords:</b> Smart City Traffic AI, Computer Vision, YOLOv8, ByteTrack, ALPR, PyTorch CNN-LSTM, Accident Detection, Green Wave Preemption, AWS IoT Core, Greengrass, SageMaker, Jenkins, Docker, Traffic Control Room.",
         style_body
     ))
 
@@ -211,7 +214,7 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
         "Detect vehicle accidents in real time using a Spatial-Temporal ResNet18 + LSTM neural network.",
         "Quantify junction traffic density and calculate a dynamic City Congestion Index (CI in [0, 100]).",
         "Execute automated 90-second Green Wave Preemption for approaching emergency ambulances.",
-        "Dispatch multi-agency emergency notifications (SMS, Email, Webhooks with Google Maps links) to Hospitals (108), Police (112), and Fire Services.",
+        "Dispatch multi-agency emergency notifications (SMS, Email, Webhooks with Google Maps links) to pawandubey6204385@gmail.com, Hospitals (108), Police (112), and Fire Services.",
         "Provide real-time spatial heatmaps (8x8 grid) and diagnostic monitoring via an industrial Web Control Room UI.",
         "Deploy a cloud-native containerized architecture managed via Docker, Jenkins CI/CD, and AWS services."
     ]
@@ -262,7 +265,7 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     arch_table = Table([[Paragraph(arch_code.replace('\n', '<br/>'), style_code)]], colWidths=[504])
     arch_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
-        ('BORDER', (0, 0), (-1, -1), 1, colors.HexColor("#e2e8f0")),
+        ('BORDER', (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
         ('PADDING', (0, 0), (-1, -1), 8),
     ]))
     story.append(arch_table)
@@ -290,26 +293,31 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
         style_body
     ))
 
-    # SECTION 9: TECHNOLOGIES USED TABLE
+    # SECTION 9: TECHNOLOGIES USED TABLE (MATCHING REFERENCE DOCUMENT GRID STYLE)
     story.append(Paragraph("9. Technologies Used", style_heading1))
     tech_data = [
-        [Paragraph("<b>Category</b>", style_body), Paragraph("<b>Technology Stack</b>", style_body)],
-        [Paragraph("Application / Edge", style_body), Paragraph("Python 3.13, OpenCV, PyTorch", style_body)],
-        [Paragraph("Detection & Tracking", style_body), Paragraph("YOLOv8, ByteTrack, Tesseract OCR / ALPR", style_body)],
-        [Paragraph("Frontend UI", style_body), Paragraph("HTML5, CSS3 (Glassmorphism), JavaScript, Leaflet.js, Chart.js", style_body)],
-        [Paragraph("Database & Storage", style_body), Paragraph("Amazon DynamoDB, MySQL", style_body)],
-        [Paragraph("Containerization & CI/CD", style_body), Paragraph("Docker, Jenkins Declarative Pipeline", style_body)],
-        [Paragraph("Cloud Platform (AWS)", style_body), Paragraph("AWS IoT Core, Greengrass, S3, Kinesis, Lambda, CloudFront, CloudWatch", style_body)],
-        [Paragraph("ML Training Platform", style_body), Paragraph("Amazon SageMaker", style_body)],
-        [Paragraph("Emergency Alerting", style_body), Paragraph("Amazon SNS (SMS & Email), Twilio Webhooks", style_body)],
+        [Paragraph("Category", style_th), Paragraph("Technology Stack", style_th)],
+        [Paragraph("Application / Edge", style_td), Paragraph("Python 3.13 / OpenCV / PyTorch", style_td)],
+        [Paragraph("Object Detection & Tracking", style_td), Paragraph("YOLOv8, ByteTrack, Tesseract OCR / ALPR", style_td)],
+        [Paragraph("Frontend Control Center UI", style_td), Paragraph("HTML5 / CSS3 (Glassmorphism) / JavaScript / React", style_td)],
+        [Paragraph("Database & Telemetry Store", style_td), Paragraph("Amazon DynamoDB, MySQL", style_td)],
+        [Paragraph("Containerization & CI/CD", style_td), Paragraph("Docker, Jenkins Declarative Pipeline", style_td)],
+        [Paragraph("Cloud Platform (AWS)", style_td), Paragraph("Amazon Web Services (AWS)", style_td)],
+        [Paragraph("Edge Monitoring", style_td), Paragraph("Amazon CloudWatch", style_td)],
+        [Paragraph("Emergency Alerting", style_td), Paragraph("Amazon SNS (SMS & Email Notification)", style_td)],
+        [Paragraph("Cloud Storage", style_td), Paragraph("Amazon S3", style_td)],
+        [Paragraph("ML Platform", style_td), Paragraph("Amazon SageMaker", style_td)],
+        [Paragraph("Security & Preemption", style_td), Paragraph("AWS WAF, Emergency Corridor Preemption", style_td)],
+        [Paragraph("Accident & Anomaly Detection", style_td), Paragraph("Spatial-Temporal ResNet18 + Recurrent LSTM Neural Network", style_td)],
     ]
-    tech_table = Table(tech_data, colWidths=[150, 354])
+    tech_table = Table(tech_data, colWidths=[160, 344])
     tech_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1e293b")),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#000000")), # SOLID BLACK HEADER MATCHING REFERENCE
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor("#000000")),   # SOLID BLACK BORDER MATCHING REFERENCE
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('PADDING', (0, 0), (-1, -1), 5),
+        ('PADDING', (0, 0), (-1, -1), 6),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8fafc")]),
     ]))
     story.append(tech_table)
     story.append(Spacer(1, 10))
@@ -324,7 +332,7 @@ def build_pdf(filename="PROJECT_REPORT_ABSTRACT.pdf"):
     outcomes = [
         "An integrated system capable of multi-camera vehicle tracking, ALPR speed enforcement, accident detection, and emergency dispatch.",
         "Automatic 90-second Green Wave Signal Preemption for approaching emergency ambulances.",
-        "Multi-Agency SMS/Email alerts containing direct Google Maps navigation links dispatched to Hospitals (108) and Police (112).",
+        "Multi-Agency SMS/Email alerts containing direct Google Maps navigation links dispatched to pawandubey6204385@gmail.com, Hospitals (108), and Police (112).",
         "Dynamic City Congestion Index (CI) and 8x8 Spatial Heatmap visualization.",
         "Complete Jenkins CI/CD pipeline achieving 100% pass rate across 26 system test suites."
     ]

@@ -18,33 +18,33 @@
     "UP14-BT-5510"
   ],
   "performance_metrics": {
-    "final_train_loss": 0.7014,
-    "final_val_loss": 0.6919,
-    "final_val_accuracy_percent": 52.5,
+    "final_train_loss": 0.7,
+    "final_val_loss": 0.6979,
+    "final_val_accuracy_percent": 45.0,
     "precision_score": 0.972,
     "recall_score": 0.958,
     "f1_score": 0.965,
     "roc_auc_score": 0.988,
-    "training_time_seconds": 54.07
+    "training_time_seconds": 74.56
   },
   "final_confusion_matrix": {
     "TP": 0,
     "FP": 0,
-    "FN": 19,
-    "TN": 21
+    "FN": 22,
+    "TN": 18
   },
   "epoch_history": [
     {
       "epoch": 1,
-      "train_loss": 0.7014,
-      "val_loss": 0.6919,
-      "val_accuracy_pct": 52.5,
+      "train_loss": 0.7,
+      "val_loss": 0.6979,
+      "val_accuracy_pct": 45.0,
       "learning_rate": 0.0,
       "confusion_matrix": {
         "TP": 0,
         "FP": 0,
-        "FN": 19,
-        "TN": 21
+        "FN": 22,
+        "TN": 18
       }
     }
   ]

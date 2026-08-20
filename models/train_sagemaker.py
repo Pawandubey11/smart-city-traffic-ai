@@ -65,17 +65,18 @@ def calculate_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[s
     tn = int(np.sum((y_true == 0) & (y_pred == 0)))
     return {"TP": tp, "FP": fp, "FN": fn, "TN": tn}
 
-def train_and_evaluate(epochs: Any = 15, batch_size: int = 8, lr: float = 0.001):
+def train_and_evaluate(epochs: Any = 15, batch_size: int = 8, lr: float = 0.001, model_dir: str = "models/weights"):
     if hasattr(epochs, "epochs"):
         args = epochs
         epochs = getattr(args, "epochs", 15)
         batch_size = getattr(args, "batch_size", 8)
         lr = getattr(args, "lr", 0.001)
+        model_dir = getattr(args, "model_dir", "models/weights")
         
     logger.info("==================================================")
     logger.info("STARTING INDIAN SMART CITY TRAFFIC AI MODEL TRAINING & EVALUATION")
     logger.info(f"Dataset Calibration: Indian HSRP Plates ({', '.join(INDIAN_HSRP_PLATES[:3])}) & Mixed Vehicle Classes")
-    logger.info(f"Hyperparameters - Epochs: {epochs}, Batch Size: {batch_size}, LR: {lr}")
+    logger.info(f"Hyperparameters - Epochs: {epochs}, Batch Size: {batch_size}, LR: {lr}, Model Dir: {model_dir}")
     logger.info("==================================================")
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -141,13 +142,16 @@ def train_and_evaluate(epochs: Any = 15, batch_size: int = 8, lr: float = 0.001)
     training_time_sec = round(time.time() - start_time, 2)
 
     # 4. Save Weights
-    weights_dir = "models/weights"
-    os.makedirs(weights_dir, exist_ok=True)
-    weights_path = os.path.join(weights_dir, "accident_cnn_lstm.pt")
+    os.makedirs(model_dir, exist_ok=True)
+    weights_path = os.path.join(model_dir, "accident_cnn_lstm.pt")
     torch.save(model.state_dict(), weights_path)
     logger.info(f"Saved trained PyTorch model weights artifact to: {weights_path}")
 
-    # 5. Generate Evaluation Report
+    if model_dir != "models/weights":
+        os.makedirs("models/weights", exist_ok=True)
+        torch.save(model.state_dict(), "models/weights/accident_cnn_lstm.pt")
+
+    # 5. Generate Evaluation Report & Metrics Files
     eval_report = {
         "dataset_region": "Indian Urban Traffic & HSRP License Plate Standards",
         "model_architecture": "ResNet18 Spatial Backbone + 2-Layer Recurrent LSTM (16-Frame Sequence)",
@@ -171,15 +175,21 @@ def train_and_evaluate(epochs: Any = 15, batch_size: int = 8, lr: float = 0.001)
     report_path = "models/evaluation_report.json"
     with open(report_path, "w") as f:
         json.dump(eval_report, f, indent=2)
-    logger.info(f"Generated official Indian Traffic AI evaluation report to: {report_path}")
+        
+    metrics_path = os.path.join(model_dir, "evaluation_metrics.json")
+    with open(metrics_path, "w") as f:
+        json.dump(eval_report["performance_metrics"], f, indent=2)
+
+    logger.info(f"Generated official Indian Traffic AI evaluation report to: {report_path} and {metrics_path}")
 
 train = train_and_evaluate
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=15)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=0.001)
+    parser.add_argument("--model-dir", type=str, default="models/weights")
     args = parser.parse_args()
     
-    train_and_evaluate(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
+    train_and_evaluate(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr, model_dir=args.model_dir)

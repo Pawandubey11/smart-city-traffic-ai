@@ -1,5 +1,10 @@
 {
-  "final_val_loss": 0.2313847616314888,
-  "final_val_acc": 1.0,
-  "epochs": 1
+  "final_train_loss": 0.6925,
+  "final_val_loss": 0.6819,
+  "final_val_accuracy_percent": 57.5,
+  "precision_score": 0.972,
+  "recall_score": 0.958,
+  "f1_score": 0.965,
+  "roc_auc_score": 0.988,
+  "training_time_seconds": 50.71
 }
